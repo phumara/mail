@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Delete Template</h1>
+
+<div class="alert alert-warning">
+    <strong>Warning!</strong> Are you sure you want to delete the template "{{ template.name }}"?
+    This action cannot be undone.
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+        <p><strong>Template Name:</strong> {{ template.name }}</p>
+        <p><strong>Type:</strong> {{ template.get_type_display }}</p>
+        <p><strong>Subject:</strong> {{ template.subject }}</p>
+    </div>
+    
+    <button type="submit" class="btn btn-danger">Delete Template</button>
+    <a href="{% url 'template_list' %}" class="btn btn-secondary">Cancel</a>
+
+</form>
+
+{% endblock %}

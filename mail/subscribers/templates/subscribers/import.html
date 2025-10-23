@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Import Subscribers</h1>
+
+<form method="post" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    <div class="mb-3">
+
+        <label for="segment">Select List</label>
+
+        <select class="form-select" name="segment" required>
+
+            <option value="">Choose a list</option>
+
+            {% for segment in segments %}
+
+            <option value="{{ segment.pk }}">{{ segment.name }}</option>
+
+            {% endfor %}
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label for="csv_file">CSV File</label>
+
+        <input type="file" class="form-control" name="csv_file" accept=".csv" required>
+
+        <div class="form-text">CSV should have columns: email, name. Subscribers will be added to the selected list.</div>
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Import</button>
+
+    <a href="{% url 'subscriber_list' %}" class="btn btn-secondary">Cancel</a>
+
+</form>
+
+{% endblock %}

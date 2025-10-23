@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mail List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+        }
+        body {
+            background-color: var(--light-color);
+        }
+        .sidebar {
+            width: 280px;
+            min-height: 100vh;
+            background-color: var(--dark-color);
+            color: white;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: #343a40;
+        }
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: var(--primary-color);
+        }
+        .sidebar .dropdown-menu {
+            background-color: var(--dark-color);
+            border: none;
+        }
+        .sidebar .dropdown-item {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .sidebar .dropdown-item:hover {
+            color: white;
+            background-color: #343a40;
+        }
+        .main-content {
+            padding: 2rem;
+        }
+        .navbar {
+            background-color: white !important;
+            border-bottom: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <nav class="sidebar p-3">
+            <h4 class="text-white mb-4">Mail</h4>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'home' %}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'segment_list' %}"><i class="bi bi-list-ul me-2"></i> Lists</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="subscribersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-people me-2"></i> Subscribers
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="subscribersDropdown">
+                        <li><a class="dropdown-item" href="{% url 'subscriber_list' %}">All subscribers</a></li>
+                        <li><a class="dropdown-item" href="{% url 'subscriber_import' %}">Import</a></li>
+                        <li><a class="dropdown-item" href="{% url 'subscriber_bounces' %}">Bounces</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="campaignsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-envelope me-2"></i> Campaigns
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="campaignsDropdown">
+                        <li><a class="dropdown-item" href="{% url 'campaign_list' %}">All campaigns</a></li>
+                        <li><a class="dropdown-item" href="{% url 'campaign_create' %}">Create new</a></li>
+                        <li><a class="dropdown-item" href="{% url 'media_list' %}">Media</a></li>
+                        <li><a class="dropdown-item" href="{% url 'template_list' %}">Templates</a></li>
+                        <li><a class="dropdown-item" href="{% url 'campaign_analytics' %}">Analytics</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="bi bi-person-circle me-2"></i> Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="bi bi-gear me-2"></i> Settings</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="main-content flex-grow-1">
+            <nav class="navbar navbar-expand-lg mb-4">
+                <div class="container-fluid">
+                    <div class="ms-auto">
+                        {% if user.is_authenticated %}
+                            <span class="navbar-text me-3">Welcome, {{ user.username }}!</span>
+                            <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-sm">Logout</a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-primary btn-sm">Login</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

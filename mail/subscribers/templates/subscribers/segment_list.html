@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h1>Lists ({{ segments|length }})</h1>
+
+    <a href="{% url 'segment_create' %}" class="btn btn-primary">+ New</a>
+
+</div>
+
+<div class="mb-3">
+
+    <input type="text" class="form-control" placeholder="Search lists...">
+
+</div>
+
+<table class="table table-striped">
+
+    <thead>
+
+        <tr>
+
+            <th>Name</th>
+
+            <th>Type</th>
+
+            <th>Subscribers</th>
+
+            <th>Created</th>
+
+            <th>Updated</th>
+
+            <th>Actions</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for segment in segments %}
+
+        <tr>
+
+            <td>
+
+                <strong>{{ segment.name }}</strong>
+
+                <br>
+
+                <small class="text-muted">test</small>
+
+            </td>
+
+            <td>
+
+                <span class="badge bg-{% if segment.type == 'public' %}info{% else %}warning{% endif %}">{{ segment.get_type_display }}</span>
+
+                <br>
+
+                <small class="text-muted">
+
+                    <i class="bi bi-{% if segment.optin == 'double' %}check-circle{% else %}check{% endif %}"></i> {{ segment.get_optin_display }}
+
+                </small>
+
+            </td>
+
+            <td>
+
+                <strong>{{ segment.subscribers.count }}</strong>
+
+                <br>
+
+                <a href="{% url 'segment_subscribers' segment.pk %}" class="text-muted">View</a>
+
+            </td>
+
+            <td>{{ segment.created_at|date:"D, d M Y" }}</td>
+
+            <td>{{ segment.updated_at|date:"D, d M Y" }}</td>
+
+            <td>
+
+                <a href="#" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+
+                <a href="{% url 'segment_edit' segment.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+
+                <a href="{% url 'segment_delete' segment.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

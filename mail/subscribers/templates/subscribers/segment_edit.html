@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Edit List</h1>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <div class="mb-3">
+
+        <label for="id_name">Name</label>
+
+        {{ form.name }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label for="id_description">Description</label>
+
+        {{ form.description }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label for="id_type">Type</label>
+
+        {{ form.type }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label for="id_optin">Opt-in</label>
+
+        {{ form.optin }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label for="id_tags">Tags</label>
+
+        {{ form.tags }}
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+
+    <a href="{% url 'segment_list' %}" class="btn btn-secondary">Cancel</a>
+
+</form>
+
+{% endblock %}

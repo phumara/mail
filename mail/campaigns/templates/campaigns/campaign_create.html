@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Create Campaign</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Campaign Details</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="id_name" class="form-label">Campaign Name *</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}<div class="text-danger">{{ form.name.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_subject" class="form-label">Email Subject *</label>
+                            {{ form.subject }}
+                            {% if form.subject.errors %}<div class="text-danger">{{ form.subject.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_from_name" class="form-label">From Name (optional)</label>
+                                {{ form.from_name }}
+                                {% if form.from_name.errors %}<div class="text-danger">{{ form.from_name.errors }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_from_email" class="form-label">From Email (optional)</label>
+                                {{ form.from_email }}
+                                {% if form.from_email.errors %}<div class="text-danger">{{ form.from_email.errors }}</div>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_reply_to_email" class="form-label">Reply To Email (optional)</label>
+                            {{ form.reply_to_email }}
+                            {% if form.reply_to_email.errors %}<div class="text-danger">{{ form.reply_to_email.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Content</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="id_template" class="form-label">Template (optional)</label>
+                            {{ form.template }}
+                            <small class="form-text text-muted">Select a pre-defined template, or create the content below.</small>
+                            {% if form.template.errors %}<div class="text-danger">{{ form.template.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_html_content">HTML Content</label>
+                            {{ form.html_content }}
+                            <small class="form-text text-muted">The HTML version of your email. Required if no template is selected.</small>
+                            {% if form.html_content.errors %}<div class="text-danger">{{ form.html_content.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_text_content">Text Content</label>
+                            {{ form.text_content }}
+                            <small class="form-text text-muted">The plain text version of your email (optional).</small>
+                            {% if form.text_content.errors %}<div class="text-danger">{{ form.text_content.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Scheduling &amp; Segments</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Target Segments</label>
+                            <div id="id_subscriber_segments">
+                                {% for choice in form.subscriber_segments %}
+                                <div class="form-check">
+                                    {{ choice.tag }}
+                                    <label class="form-check-label" for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <small class="form-text text-muted">Select which segments of subscribers to send this campaign to.</small>
+                            {% if form.subscriber_segments.errors %}<div class="text-danger">{{ form.subscriber_segments.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_scheduled_at" class="form-label">Scheduled At (optional)</label>
+                            {{ form.scheduled_at }}
+                            <small class="form-text text-muted">Leave blank to send immediately.</small>
+                            {% if form.scheduled_at.errors %}<div class="text-danger">{{ form.scheduled_at.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Create Campaign</button>
+            <a href="{% url 'campaign_list' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

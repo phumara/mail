@@ -1,0 +1,103 @@
+{% extends 'admin/base_site.html' %}
+{% load static %}
+
+{% block title %}SMTP Provider Dashboard{% endblock %}
+
+{% block content %}
+<div class="module">
+    <h2>SMTP Provider Dashboard</h2>
+
+    <div style="margin-bottom: 20px;">
+        <strong>Total Providers:</strong> {{ total_providers }} |
+        <strong>Active Providers:</strong> {{ active_providers }}
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f5f5f5;">
+                <th style="padding: 10px; border: 1px solid #ddd;">Provider</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Type</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Status</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Connection</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Delivery Rate</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Rate Limits</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in stats %}
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                    <strong>{{ stat.provider.name }}</strong>
+                    {% if not stat.provider.is_active %}
+                        <br><span style="color: red;">(Inactive)</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{{ stat.provider.provider_type }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                    {% if stat.provider.is_active %}
+                        <span style="color: green;">Active</span>
+                    {% else %}
+                        <span style="color: red;">Inactive</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                    {% if stat.connection_status %}
+                        <span style="color: green;">✅ Connected</span>
+                    {% else %}
+                        <span style="color: red;">❌ {{ stat.connection_message }}</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                    <span style="{% if stat.provider.get_delivery_rate > 90 %}color: green;{% elif stat.provider.get_delivery_rate > 70 %}color: orange;{% else %}color: red;{% endif %}">
+                        {{ stat.provider.get_delivery_rate|floatformat:1 }}%
+                    </span>
+                </td>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                    {% if stat.is_within_limits %}
+                        <span style="color: green;">Within Limits</span>
+                    {% else %}
+                        <span style="color: red;">Rate Limited</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                    <a href="/admin/campaigns/smtpprovider/{{ stat.provider.id }}/change/" class="button">Edit</a>
+                    <button onclick="testConnection({{ stat.provider.id }})" class="button">Test</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="module">
+    <h3>Quick Actions</h3>
+    <a href="/admin/campaigns/smtpprovider/add/" class="button">Add New Provider</a>
+    <a href="/admin/campaigns/campaign/add/" class="button">Create Campaign</a>
+    <a href="{% url 'campaign_analytics' %}" class="button">View Analytics</a>
+</div>
+
+<script>
+function testConnection(providerId) {
+    fetch(`/campaigns/test-connection/${providerId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ ' + data.message);
+        } else {
+            alert('❌ ' + data.message);
+        }
+        location.reload();
+    })
+    .catch(error => {
+        alert('❌ Test failed: ' + error.message);
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Edit Template</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Template Details</h6>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="id_name" class="form-label">Template Name</label>
+                    {{ form.name }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_type" class="form-label">Template Type</label>
+                    {{ form.type }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_subject" class="form-label">Email Subject</label>
+                    {{ form.subject }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_body" class="form-label">Email Body</label>
+                    {{ form.body }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_body_source" class="form-label">Body Source (optional)</label>
+                    {{ form.body_source }}
+                </div>
+                
+                <div class="form-check mb-3">
+                    {{ form.is_default }}
+                    <label class="form-check-label" for="id_is_default">Set as Default</label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Update Template</button>
+                <a href="{% url 'template_list' %}" class="btn btn-secondary">Cancel</a>
+            
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Create Campaign - Simple Test</h1>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+        <label for="id_name">Campaign Name *</label>
+        <input type="text" name="name" id="id_name" class="form-control" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="id_subject">Email Subject *</label>
+        <input type="text" name="subject" id="id_subject" class="form-control" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="id_content">Content</label>
+        <textarea name="content" id="id_content" class="form-control" rows="5"></textarea>
+    </div>
+    
+    <div class="mb-3">
+        <label for="id_messenger">Messenger</label>
+        <select name="messenger" id="id_messenger" class="form-control">
+            <option value="email" selected>Email</option>
+        </select>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Create Campaign</button>
+    <a href="{% url 'campaign_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+
+{% endblock %}

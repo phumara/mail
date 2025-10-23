@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">All Campaigns</h1>
+        <a href="{% url 'campaign_create' %}" class="btn btn-primary">Create New</a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Campaigns</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Segments</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for campaign in campaigns %}
+                        <tr>
+                            <td>{{ campaign.name }}</td>
+                            <td>{{ campaign.subject }}</td>
+                            <td>
+                                <span class="badge bg-{% if campaign.status == 'draft' %}secondary{% elif campaign.status == 'scheduled' %}info{% elif campaign.status == 'running' %}warning{% else %}success{% endif %}">{{ campaign.get_status_display }}</span>
+                            </td>
+                            <td>{{ campaign.segments.count }}</td>
+                            <td>{{ campaign.created_at|date:"D, d M Y" }}</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="View"><i class="bi bi-eye"></i></a>
+                                <a href="{% url 'campaign_edit' campaign.pk %}" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'campaign_delete' campaign.pk %}" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

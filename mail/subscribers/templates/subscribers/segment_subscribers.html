@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Subscribers in {{ segment.name }}</h1>
+
+<a href="{% url 'segment_list' %}" class="btn btn-secondary">Back to Lists</a>
+
+<table class="table table-striped">
+
+    <thead>
+
+        <tr>
+
+            <th>Email</th>
+
+            <th>Name</th>
+
+            <th>Status</th>
+
+            <th>Created</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for subscriber in subscribers %}
+
+        <tr>
+
+            <td>{{ subscriber.email }}</td>
+
+            <td>{{ subscriber.name }}</td>
+
+            <td>{{ subscriber.status }}</td>
+
+            <td>{{ subscriber.created_at }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

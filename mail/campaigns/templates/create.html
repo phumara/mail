@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>New Campaign</h1>
+
+<div class="row">
+
+    <div class="col-md-8">
+
+        <ul class="nav nav-tabs" id="campaignTab" role="tablist">
+
+            <li class="nav-item" role="presentation">
+
+                <button class="nav-link active" id="campaign-tab" data-bs-toggle="tab" data-bs-target="#campaign" type="button" role="tab" aria-controls="campaign" aria-selected="true">
+
+                    <i class="bi bi-campaign"></i> Campaign
+
+                </button>
+
+            </li>
+
+            <li class="nav-item" role="presentation">
+
+                <button class="nav-link" id="content-tab" data-bs-toggle="tab" data-bs-target="#content" type="button" role="tab" aria-controls="content" aria-selected="false">
+
+                    <i class="bi bi-file-earmark-text"></i> Content
+
+                </button>
+
+            </li>
+
+            <li class="nav-item" role="presentation">
+
+                <button class="nav-link" id="archive-tab" data-bs-toggle="tab" data-bs-target="#archive" type="button" role="tab" aria-controls="archive" aria-selected="false">
+
+                    <i class="bi bi-archive"></i> Archive
+
+                </button>
+
+            </li>
+
+        </ul>
+
+        <div class="tab-content" id="campaignTabContent">
+
+            <div class="tab-pane fade show active" id="campaign" role="tabpanel" aria-labelledby="campaign-tab">
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+
+                        <label for="id_name">Name</label>
+
+                        {{ form.name }}
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="id_subject">Subject</label>
+
+                        {{ form.subject }}
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="id_from_address">From address</label>
+
+                        {{ form.from_address }}
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="id_segments">Lists ({{ form.segments.field.queryset.count }})</label>
+
+                        {{ form.segments }}
+
+                        <div class="form-text">Lists to send to</div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="id_template">Template</label>
+
+                        {{ form.template }}
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="id_messenger">Messenger</label>
+
+                        {{ form.messenger }}
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="id_tags">Tags</label>
+
+                        {{ form.tags }}
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Send later</label>
+
+                        <div class="form-check form-switch">
+
+                            <input class="form-check-input" type="checkbox" id="send_later">
+
+                            <label class="form-check-label" for="send_later">
+
+                                Schedule for later
+
+                            </label>
+
+                        </div>
+
+                        {% if form.scheduled_at %}
+
+                        <div class="mt-2">
+
+                            {{ form.scheduled_at }}
+
+                        </div>
+
+                        {% endif %}
+
+                        <div class="mt-2">
+
+                            <a href="#" class="text-decoration-none">+ Set custom headers</a>
+
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Continue</button>
+
+                    <a href="{% url 'campaign_list' %}" class="btn btn-secondary">Cancel</a>
+
+                </form>
+
+            </div>
+
+            <div class="tab-pane fade" id="content" role="tabpanel" aria-labelledby="content-tab">
+
+                <div class="mb-3">
+
+                    <label for="id_content">Content</label>
+
+                    {{ form.content }}
+
+                    <div class="form-text">Email content in HTML or plain text.</div>
+
+                </div>
+
+            </div>
+
+            <div class="tab-pane fade" id="archive" role="tabpanel" aria-labelledby="archive-tab">
+
+                <p>Archive tab coming soon...</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h5 class="mb-0">Send test message</h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="mb-3">
+
+                    <label for="test_emails">E-mails</label>
+
+                    <input type="text" class="form-control" id="test_emails" placeholder="Enter email addresses">
+
+                    <div class="form-text">Hit Enter after typing an address to add multiple recipients. The addresses must belong to existing subscribers.</div>
+
+                </div>
+
+                <button class="btn btn-outline-secondary">Send</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Bounces</h1>
+
+<table class="table table-striped">
+
+    <thead>
+
+        <tr>
+
+            <th>Email</th>
+
+            <th>Name</th>
+
+            <th>Status</th>
+
+            <th>Created</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for bounce in bounces %}
+
+        <tr>
+
+            <td>{{ bounce.email }}</td>
+
+            <td>{{ bounce.name }}</td>
+
+            <td>{{ bounce.status }}</td>
+
+            <td>{{ bounce.created_at }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

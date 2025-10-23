@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Create Template</h1>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <div class="mb-3">
+
+        <label for="id_name">Name</label>
+
+        {{ form.name }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label for="id_type">Type</label>
+
+        {{ form.type }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label for="id_subject">Subject</label>
+
+        {{ form.subject }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label for="id_body">Body</label>
+
+        {{ form.body }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <label for="id_body_source">Body Source</label>
+
+        {{ form.body_source }}
+
+    </div>
+
+    <div class="mb-3">
+
+        <div class="form-check">
+
+            {{ form.is_default }}
+
+            <label for="id_is_default">Is Default</label>
+
+        </div>
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+
+    <a href="{% url 'template_list' %}" class="btn btn-secondary">Cancel</a>
+
+</form>
+
+{% endblock %}
