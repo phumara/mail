@@ -6,7 +6,7 @@
 
     <h1>Templates</h1>
 
-    <a href="{% url 'template_create' %}" class="btn btn-primary">Create new</a>
+    <a href="/campaigns/templates/create/" class="btn btn-primary">Create new</a>
 
 </div>
 
@@ -40,15 +40,19 @@
 
             <td>{{ template.name }}</td>
 
-            <td>{{ template.get_type_display }}</td>
+            <td>Email Template</td>
 
             <td>{{ template.subject }}</td>
 
             <td>
 
-                {% if template.is_default %}
+                {% if template.is_active %}
 
-                <span class="badge bg-success">Default</span>
+                <span class="badge bg-success">Active</span>
+
+                {% else %}
+
+                <span class="badge bg-secondary">Inactive</span>
 
                 {% endif %}
 
@@ -58,9 +62,9 @@
 
             <td>
 
-                <a href="{% url 'template_edit' template.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                <a href="/campaigns/templates/template_edit/" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
 
-                <a href="{% url 'template_delete' template.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                <a href="/campaigns/templates/template_delete/" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
 
             </td>
 

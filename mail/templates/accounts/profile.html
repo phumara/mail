@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block title %}User Profile - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>User Profile</h1>
+            <p class="text-muted">View and manage your account information</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Account Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Username</label>
+                                <p class="form-control-plaintext">{{ user.username }}</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <p class="form-control-plaintext">{{ user.email }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">First Name</label>
+                                <p class="form-control-plaintext">{{ user.first_name|default:"Not provided" }}</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Last Name</label>
+                                <p class="form-control-plaintext">{{ user.last_name|default:"Not provided" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Account Created</label>
+                                <p class="form-control-plaintext">{{ user.date_joined|date:"Y-m-d H:i" }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Last Login</label>
+                                <p class="form-control-plaintext">{{ user.last_login|date:"Y-m-d H:i"|default:"Never" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Permissions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" disabled {% if user.is_staff %}checked{% endif %}>
+                                <label class="form-check-label" for="is_staff">
+                                    Staff Status
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" disabled {% if user.is_superuser %}checked{% endif %}>
+                                <label class="form-check-label" for="is_superuser">
+                                    Superuser Access
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" disabled {% if user.can_manage_subscribers %}checked{% endif %}>
+                                <label class="form-check-label" for="can_manage_subscribers">
+                                    Can Manage All Subscribers
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" disabled {% if user.can_add_own_subscribers %}checked{% endif %}>
+                                <label class="form-check-label" for="can_add_own_subscribers">
+                                    Can Add Own Subscribers
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">What You Can Do</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Subscriber Management</h6>
+                            <ul class="small">
+                                {% if user.can_manage_subscribers %}
+                                    <li>View all subscribers in the system</li>
+                                    <li>Edit any subscriber's information</li>
+                                    <li>Delete any subscriber</li>
+                                {% elif user.can_add_own_subscribers %}
+                                    <li>Create and manage your own subscribers</li>
+                                    <li>View only subscribers you created</li>
+                                    <li>Edit and delete your own subscribers</li>
+                                {% else %}
+                                    <li class="text-muted">No subscriber access</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>SMTP Configuration</h6>
+                            <ul class="small">
+                                <li>Create and manage your own SMTP providers</li>
+                                <li>Test your SMTP connections</li>
+                                <li>Use your SMTP providers in campaigns</li>
+                                <li class="text-muted">Cannot access other users' SMTP settings</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'subscribers:subscriber_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-users"></i> View Subscribers
+                        </a>
+                        <a href="{% url 'campaigns:smtp_manager' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-cog"></i> SMTP Settings
+                        </a>
+                        {% if user.is_superuser %}
+                        <a href="{% url 'accounts:user_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-user-cog"></i> User Management
+                        </a>
+                        {% endif %}
+                        <hr>
+                        <a href="{% url 'password_change' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-key"></i> Change Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">Account Statistics</h6>
+                </div>
+                <div class="card-body">
+                    <div class="small">
+                        <div class="d-flex justify-content-between">
+                            <span>Your Subscribers:</span>
+                            <strong>{{ user.subscriber_set.count }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Your SMTP Providers:</span>
+                            <strong>{{ user.smtpprovider_set.count }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Total Campaigns:</span>
+                            <strong>{{ user.campaign_set.count }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

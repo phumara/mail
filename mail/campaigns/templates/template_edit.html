@@ -18,51 +18,43 @@
 
     <div class="mb-3">
 
-        <label for="id_type">Type</label>
+         <label for="id_subject">Subject</label>
 
-        {{ form.type }}
+         {{ form.subject }}
 
-    </div>
+     </div>
 
-    <div class="mb-3">
+     <div class="mb-3">
 
-        <label for="id_subject">Subject</label>
+         <label for="id_html_content">HTML Content</label>
 
-        {{ form.subject }}
+         {{ form.html_content }}
 
-    </div>
+     </div>
 
-    <div class="mb-3">
+     <div class="mb-3">
 
-        <label for="id_body">Body</label>
+         <label for="id_text_content">Text Content (Optional)</label>
 
-        {{ form.body }}
+         {{ form.text_content }}
 
-    </div>
+     </div>
 
-    <div class="mb-3">
+     <div class="mb-3">
 
-        <label for="id_body_source">Body Source</label>
+         <div class="form-check">
 
-        {{ form.body_source }}
+             {{ form.is_active }}
 
-    </div>
+             <label for="id_is_active">Is Active</label>
 
-    <div class="mb-3">
+         </div>
 
-        <div class="form-check">
-
-            {{ form.is_default }}
-
-            <label for="id_is_default">Is Default</label>
-
-        </div>
-
-    </div>
+     </div>
 
     <button type="submit" class="btn btn-primary">Update</button>
 
-    <a href="{% url 'template_list' %}" class="btn btn-secondary">Cancel</a>
+    <a href="/campaigns/templates/" class="btn btn-secondary">Cancel</a>
 
 </form>
 

@@ -86,17 +86,49 @@ REM Collect static files
 echo 📁 Collecting static files...
 python manage.py collectstatic --noinput
 
+REM Create helper batch files for common commands
+echo 📝 Creating helper batch files...
+echo @echo off > runserver.bat
+echo REM Activate virtual environment and run Django development server >> runserver.bat
+echo call .venv\Scripts\activate.bat >> runserver.bat
+echo python manage.py runserver >> runserver.bat
+
+echo @echo off > migrate.bat
+echo REM Activate virtual environment and run Django migrations >> migrate.bat
+echo call .venv\Scripts\activate.bat >> migrate.bat
+echo python manage.py migrate >> migrate.bat
+
+echo @echo off > createsuperuser.bat
+echo REM Activate virtual environment and create Django superuser >> createsuperuser.bat
+echo call .venv\Scripts\activate.bat >> createsuperuser.bat
+echo python manage.py createsuperuser >> createsuperuser.bat
+
+echo @echo off > test_smtp.bat
+echo REM Activate virtual environment and test SMTP connections >> test_smtp.bat
+echo call .venv\Scripts\activate.bat >> test_smtp.bat
+echo python manage.py test_smtp >> test_smtp.bat
+
 echo.
 echo 🎉 Installation completed!
 echo.
 echo To start the development server:
-echo    python manage.py runserver
+echo    runserver.bat
+echo.
+echo To run migrations:
+echo    migrate.bat
+echo.
+echo To create superuser:
+echo    createsuperuser.bat
+echo.
+echo To test SMTP connections:
+echo    test_smtp.bat
+echo.
+echo Or manually activate the virtual environment:
+echo    call .venv\Scripts\activate.bat
+echo    Then run: python manage.py <command>
 echo.
 echo To start with Docker (recommended for production^):
 echo    docker-compose up -d
-echo.
-echo To test SMTP connections:
-echo    python manage.py test_smtp
 echo.
 echo Access the admin interface at: http://localhost:8000/admin/
 echo SMTP Dashboard at: http://localhost:8000/campaigns/smtp-dashboard/

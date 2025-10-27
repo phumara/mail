@@ -2,51 +2,198 @@
 
 {% block content %}
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">Create Template</h1>
-
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Template Details</h6>
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mb-5">
+        <div class="mb-3 mb-lg-0">
+            <h1 class="h2 mb-1">Create Email Template</h1>
+            <p class="text-secondary mb-0">Design professional email templates for your campaigns</p>
         </div>
-        <div class="card-body">
-            <form method="post">
-                {% csrf_token %}
-                
-                <div class="mb-3">
-                    <label for="id_name" class="form-label">Template Name</label>
-                    {{ form.name }}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="/campaigns/templates/">Templates</a></li>
+                <li class="breadcrumb-item active">Create</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-file-earmark-plus me-2 text-primary"></i>
+                        Template Details
+                    </h5>
                 </div>
-                
-                <div class="mb-3">
-                    <label for="id_type" class="form-label">Template Type</label>
-                    {{ form.type }}
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label for="{{ form.name.id_for_label }}" class="form-label fw-bold">
+                                <i class="bi bi-tag me-2 text-primary"></i>Template Name
+                            </label>
+                            <div class="input-group">
+                                {{ form.name }}
+                                <span class="input-group-text">
+                                    <i class="bi bi-info-circle" title="Unique name for this template"></i>
+                                </span>
+                            </div>
+                            {% if form.name.errors %}
+                                <div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">Choose a descriptive name for your email template</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.subject.id_for_label }}" class="form-label fw-bold">
+                                <i class="bi bi-chat-quote me-2 text-primary"></i>Email Subject
+                            </label>
+                            <div class="input-group">
+                                {{ form.subject }}
+                                <span class="input-group-text">
+                                    <i class="bi bi-envelope" title="Default subject line"></i>
+                                </span>
+                            </div>
+                            {% if form.subject.errors %}
+                                <div class="text-danger small mt-1">{{ form.subject.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">This will be the default subject for emails using this template</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.html_content.id_for_label }}" class="form-label fw-bold">
+                                <i class="bi bi-code-slash me-2 text-primary"></i>HTML Content
+                            </label>
+                            {{ form.html_content }}
+                            {% if form.html_content.errors %}
+                                <div class="text-danger small mt-1">{{ form.html_content.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">Support for HTML tags, CSS styling, and template variables like {subscriber.name}</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.text_content.id_for_label }}" class="form-label fw-bold">
+                                <i class="bi bi-file-text me-2 text-primary"></i>Plain Text Content <span class="text-muted">(Optional)</span>
+                            </label>
+                            {{ form.text_content }}
+                            {{ form.text_content.errors }}
+                            <div class="form-text">Fallback plain text version for email clients that don't support HTML</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                {{ form.is_active }}
+                                <label class="form-check-label fw-bold" for="{{ form.is_active.id_for_label }}">
+                                    <i class="bi bi-toggle-on me-2 text-primary"></i>Active Template
+                                </label>
+                            </div>
+                            {{ form.is_active.errors }}
+                            <div class="form-text">Only active templates can be used in campaigns</div>
+                        </div>
+
+                        <div class="d-flex gap-3 pt-3 border-top">
+                            <button type="submit" class="btn btn-primary d-flex align-items-center">
+                                <i class="bi bi-check-circle me-2"></i>Create Template
+                            </button>
+                            <a href="{% url 'campaigns:template_list' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                <i class="bi bi-x-circle me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
                 </div>
-                
-                <div class="mb-3">
-                    <label for="id_subject" class="form-label">Email Subject</label>
-                    {{ form.subject }}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-info-circle me-2 text-info"></i>Template Tips
+                    </h5>
                 </div>
-                
-                <div class="mb-3">
-                    <label for="id_body" class="form-label">Email Body</label>
-                    {{ form.body }}
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h6><i class="bi bi-lightbulb me-2"></i>Template Variables</h6>
+                        <p class="mb-2 small">Use these variables in your template:</p>
+                        <code class="d-block bg-light p-2 rounded small">
+                            {subscriber.name} - Subscriber's name<br>
+                            {subscriber.email} - Subscriber's email<br>
+                            {unsubscribe_link} - Unsubscribe URL
+                        </code>
+                    </div>
+
+                    <h6 class="text-muted mb-2">Best Practices:</h6>
+                    <ul class="small text-muted ps-3">
+                        <li>Use responsive design for mobile compatibility</li>
+                        <li>Include a clear call-to-action button</li>
+                        <li>Keep subject lines under 50 characters</li>
+                        <li>Test your templates before sending</li>
+                    </ul>
                 </div>
-                
-                <div class="mb-3">
-                    <label for="id_body_source" class="form-label">Body Source (optional)</label>
-                    {{ form.body_source }}
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header bg-white border-0">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-magic me-2 text-warning"></i>Quick Templates
+                    </h6>
                 </div>
-                
-                <div class="form-check mb-3">
-                    {{ form.is_default }}
-                    <label class="form-check-label" for="id_is_default">Set as Default</label>
+                <div class="card-body">
+                    <button class="btn btn-sm btn-outline-primary w-100 mb-2" onclick="loadWelcomeTemplate()">
+                        <i class="bi bi-envelope-heart me-1"></i>Welcome Email
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary w-100 mb-2" onclick="loadPromotionalTemplate()">
+                        <i class="bi bi-graph-up me-1"></i>Promotional Offer
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary w-100" onclick="loadNewsletterTemplate()">
+                        <i class="bi bi-newspaper me-1"></i>Newsletter
+                    </button>
                 </div>
-                
-                <button type="submit" class="btn btn-primary">Create Template</button>
-                <a href="{% url 'template_list' %}" class="btn btn-secondary">Cancel</a>
-            
-            </form>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+.form-control:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+}
+.form-check-input:checked {
+    background-color: #6366f1;
+    border-color: #6366f1;
+}
+.btn-primary:hover { transform: translateY(-1px); }
+.alert { border: none; border-radius: 8px; }
+.card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: none;
+    transition: all 0.3s ease;
+}
+.card:hover { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); }
+</style>
+
+<script>
+function loadWelcomeTemplate() {
+    document.getElementById('{{ form.name.id_for_label }}').value = 'Welcome Email';
+    document.getElementById('{{ form.subject.id_for_label }}').value = 'Welcome to Our Newsletter!';
+    document.getElementById('{{ form.html_content.id_for_label }}').value = `<p>Hi {subscriber.name},</p><p>Welcome to our newsletter! We're excited to have you as part of our community.</p><div style="margin: 20px 0;"><h3>Ready to get started?</h3><p>Join thousands of subscribers who trust us with their inbox.</p><a href="#" style="background: #6366f1; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Explore Our Content</a></div><p>Best regards,<br>The Newsletter Team</p>`;
+    document.getElementById('{{ form.text_content.id_for_label }}').value = `Hi {subscriber.name},\nWelcome to our newsletter! We're excited to have you as part of our community.\n\nBest regards,\nThe Newsletter Team`;
+}
+
+function loadPromotionalTemplate() {
+    document.getElementById('{{ form.name.id_for_label }}').value = 'Promotional Offer';
+    document.getElementById('{{ form.subject.id_for_label }}').value = 'Special Offer: 50% Off Today Only!';
+    document.getElementById('{{ form.html_content.id_for_label }}').value = `<p>Hi {subscriber.name},</p><div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0;">🎉 FLASH SALE ALERT: 50% OFF Everything!</div><p>We know you love great deals, so we're offering you an exclusive 50% discount on all our products!</p><div style="margin: 20px 0;"><h3>Don't miss out!</h3><p>This offer expires in 24 hours. Shop now and save big!</p><a href="#" style="background: #6366f1; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Shop Now & Save 50%</a></div><p>Best regards,<br>Our Sales Team</p>`;
+    document.getElementById('{{ form.text_content.id_for_label }}').value = `Hi {subscriber.name},\nFLASH SALE ALERT: 50% OFF Everything!\nWe know you love great deals, so we're offering you an exclusive 50% discount on all our products!\n\nBest regards,\nOur Sales Team`;
+}
+
+function loadNewsletterTemplate() {
+    document.getElementById('{{ form.name.id_for_label }}').value = 'Newsletter';
+    document.getElementById('{{ form.subject.id_for_label }}').value = 'Weekly Newsletter - Latest Updates';
+    document.getElementById('{{ form.html_content.id_for_label }}').value = `<p>Hi {subscriber.name},</p><p>Here's your weekly dose of industry insights and updates:</p><h2>This Week's Headlines</h2><h3>🚀 Major Industry Update</h3><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><div style="margin: 20px 0;"><h3>What do you think?</h3><p>We'd love to hear your thoughts on this week's newsletter!</p><a href="#" style="background: #6366f1; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Share Your Feedback</a></div><p>Best regards,<br>The Newsletter Team</p>`;
+    document.getElementById('{{ form.text_content.id_for_label }}').value = `Hi {subscriber.name},\nHere's your weekly dose of industry insights and updates:\n\n🚀 Major Industry Update\nLorem ipsum dolor sit amet, consectetur adipiscing elit.\n\nBest regards,\nThe Newsletter Team`;
+}
+</script>
 {% endblock %}

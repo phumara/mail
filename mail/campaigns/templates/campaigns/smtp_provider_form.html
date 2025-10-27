@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">{{ title }}</h1>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Please correct the following errors:</strong>
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Provider Details</h6>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="id_name" class="form-label">Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<div class="text-danger">{{ form.name.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_provider_type" class="form-label">Provider Type</label>
+                    {{ form.provider_type }}
+                    {% if form.provider_type.errors %}<div class="text-danger">{{ form.provider_type.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3 form-check">
+                    {{ form.is_active }}
+                    <label class="form-check-label" for="id_is_active">Is Active</label>
+                    {% if form.is_active.errors %}<div class="text-danger">{{ form.is_active.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3 form-check">
+                    {{ form.is_default }}
+                    <label class="form-check-label" for="id_is_default">Is Default</label>
+                    {% if form.is_default.errors %}<div class="text-danger">{{ form.is_default.errors }}</div>{% endif %}
+                </div>
+
+                <hr>
+                <h6 class="m-0 font-weight-bold text-primary mb-3">SMTP Settings</h6>
+
+                <div class="mb-3">
+                    <label for="id_host" class="form-label">Host</label>
+                    {{ form.host }}
+                    {% if form.host.errors %}<div class="text-danger">{{ form.host.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_port" class="form-label">Port</label>
+                    {{ form.port }}
+                    {% if form.port.errors %}<div class="text-danger">{{ form.port.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3 form-check">
+                    {{ form.use_tls }}
+                    <label class="form-check-label" for="id_use_tls">Use TLS</label>
+                    {% if form.use_tls.errors %}<div class="text-danger">{{ form.use_tls.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3 form-check">
+                    {{ form.use_ssl }}
+                    <label class="form-check-label" for="id_use_ssl">Use SSL</label>
+                    {% if form.use_ssl.errors %}<div class="text-danger">{{ form.use_ssl.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3 form-check">
+                    {{ form.skip_tls_verify }}
+                    <label class="form-check-label" for="id_skip_tls_verify">Skip TLS Verification</label>
+                    {% if form.skip_tls_verify.errors %}<div class="text-danger">{{ form.skip_tls_verify.errors }}</div>{% endif %}
+                </div>
+
+                <hr>
+                <h6 class="m-0 font-weight-bold text-primary mb-3">Authentication</h6>
+
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}<div class="text-danger">{{ form.username.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_password" class="form-label">Password</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}<div class="text-danger">{{ form.password.errors }}</div>{% endif %}
+                </div>
+
+                <hr>
+                <h6 class="m-0 font-weight-bold text-primary mb-3">API Settings (if applicable)</h6>
+
+                <div class="mb-3">
+                    <label for="id_api_key" class="form-label">API Key</label>
+                    {{ form.api_key }}
+                    {% if form.api_key.errors %}<div class="text-danger">{{ form.api_key.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_api_secret" class="form-label">API Secret</label>
+                    {{ form.api_secret }}
+                    {% if form.api_secret.errors %}<div class="text-danger">{{ form.api_secret.errors }}</div>{% endif %}
+                </div>
+
+                <hr>
+                <h6 class="m-0 font-weight-bold text-primary mb-3">Rate Limits</h6>
+
+                <div class="mb-3">
+                    <label for="id_emails_per_day" class="form-label">Emails Per Day</label>
+                    {{ form.emails_per_day }}
+                    {% if form.emails_per_day.errors %}<div class="text-danger">{{ form.emails_per_day.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_emails_per_hour" class="form-label">Emails Per Hour</label>
+                    {{ form.emails_per_hour }}
+                    {% if form.emails_per_hour.errors %}<div class="text-danger">{{ form.emails_per_hour.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_emails_per_second" class="form-label">Emails Per Second</label>
+                    {{ form.emails_per_second }}
+                    {% if form.emails_per_second.errors %}<div class="text-danger">{{ form.emails_per_second.errors }}</div>{% endif %}
+                </div>
+
+                <hr>
+                <h6 class="m-0 font-weight-bold text-primary mb-3">Sender Information</h6>
+
+                <div class="mb-3">
+                    <label for="id_from_email" class="form-label">From Email</label>
+                    {{ form.from_email }}
+                    {% if form.from_email.errors %}<div class="text-danger">{{ form.from_email.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_from_name" class="form-label">From Name</label>
+                    {{ form.from_name }}
+                    {% if form.from_name.errors %}<div class="text-danger">{{ form.from_name.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_reply_to_email" class="form-label">Reply To Email</label>
+                    {{ form.reply_to_email }}
+                    {% if form.reply_to_email.errors %}<div class="text-danger">{{ form.reply_to_email.errors }}</div>{% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a href="{% url 'campaigns:smtp_manager' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -2,6 +2,8 @@ from django.urls import path
 
 from . import views
 
+app_name = 'subscribers'
+
 urlpatterns = [
 
     path('list/', views.subscriber_list, name='subscriber_list'),
@@ -25,5 +27,6 @@ urlpatterns = [
     path('segments/<int:pk>/delete/', views.segment_delete, name='segment_delete'),
 
     path('segments/<int:pk>/subscribers/', views.segment_subscribers, name='segment_subscribers'),
+    path('search-subscribers/', views.search_subscribers, name='search_subscribers'),
 
 ]

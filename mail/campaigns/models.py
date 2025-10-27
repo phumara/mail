@@ -1,7 +1,19 @@
 from django.db import models
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import EmailValidator
 import json
+
+
+class Media(models.Model):
+    """Model to store uploaded media files"""
+    name = models.CharField(max_length=255)
+    file = models.FileField(upload_to='media/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class SMTPProvider(models.Model):
@@ -21,12 +33,14 @@ class SMTPProvider(models.Model):
     name = models.CharField(_('Provider Name'), max_length=100, unique=True)
     provider_type = models.CharField(_('Provider Type'), max_length=20, choices=PROVIDER_CHOICES)
     is_active = models.BooleanField(_('Active'), default=True)
+    is_default = models.BooleanField(_('Default Provider'), default=False)
 
     # SMTP Settings
     host = models.CharField(_('SMTP Host'), max_length=255)
     port = models.IntegerField(_('SMTP Port'), default=587)
     use_tls = models.BooleanField(_('Use TLS'), default=True)
     use_ssl = models.BooleanField(_('Use SSL'), default=False)
+    skip_tls_verify = models.BooleanField(_('Skip TLS Verification'), default=False)
 
     # Authentication
     username = models.CharField(_('Username'), max_length=255, blank=True)
@@ -54,6 +68,7 @@ class SMTPProvider(models.Model):
     total_clicked = models.BigIntegerField(_('Total Clicked'), default=0)
 
     # Metadata
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(_('Created At'), auto_now_add=True)
     updated_at = models.DateTimeField(_('Updated At'), auto_now=True)
     last_used = models.DateTimeField(_('Last Used'), null=True, blank=True)
@@ -65,6 +80,12 @@ class SMTPProvider(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.provider_type})"
+
+    def save(self, *args, **kwargs):
+        if self.is_default:
+            # If this provider is set as default, ensure all others are not
+            SMTPProvider.objects.exclude(pk=self.pk).update(is_default=False)
+        super().save(*args, **kwargs)
 
     def get_delivery_rate(self):
         """Calculate delivery rate percentage"""
@@ -110,7 +131,7 @@ class EmailTemplate(models.Model):
     variables = models.JSONField(_('Template Variables'), default=dict, blank=True)
 
     # Metadata
-    created_by = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(_('Created At'), auto_now_add=True)
     updated_at = models.DateTimeField(_('Updated At'), auto_now=True)
 
@@ -156,7 +177,7 @@ class Campaign(models.Model):
     status = models.CharField(_('Status'), max_length=20, choices=STATUS_CHOICES, default='draft')
 
     # Scheduling
-    scheduled_at = models.DateTimeField(_('Scheduled At'), null=True, blank=True)
+
     sent_at = models.DateTimeField(_('Sent At'), null=True, blank=True)
 
     # Tracking
@@ -169,7 +190,7 @@ class Campaign(models.Model):
     total_unsubscribed = models.IntegerField(_('Total Unsubscribed'), default=0)
 
     # Metadata
-    created_by = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(_('Created At'), auto_now_add=True)
     updated_at = models.DateTimeField(_('Updated At'), auto_now=True)
 

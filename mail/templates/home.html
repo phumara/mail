@@ -2,75 +2,156 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="h2 mb-1">Dashboard Overview</h1>
+            <p class="text-secondary mb-0">Monitor your email campaign performance</p>
+        </div>
+        <div>
+            <small class="text-secondary">
+                <i class="bi bi-calendar me-1"></i>
+                Last updated: {{ now|date:"M d, Y H:i" }}
+            </small>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="avatar-icon bg-primary-subtle rounded-3 p-3">
+                            <i class="bi bi-list-ul fs-2 text-primary"></i>
+                        </div>
+                        <div class="text-end">
+                            <h3 class="mb-0">{{ total_lists|default:0 }}</h3>
+                        </div>
+                    </div>
+                    <h6 class="card-title mb-0 text-secondary">Lists</h6>
+                    <p class="small text-muted mb-0">Active subscriber lists</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="avatar-icon bg-success-subtle rounded-3 p-3">
+                            <i class="bi bi-people fs-2 text-success"></i>
+                        </div>
+                        <div class="text-end">
+                            <h3 class="mb-0">{{ total_subscribers|default:0 }}</h3>
+                        </div>
+                    </div>
+                    <h6 class="card-title mb-0 text-secondary">Subscribers</h6>
+                    <p class="small text-muted mb-0">Total registered users</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="avatar-icon bg-info-subtle rounded-3 p-3">
+                            <i class="bi bi-envelope fs-2 text-info"></i>
+                        </div>
+                        <div class="text-end">
+                            <h3 class="mb-0">{{ total_campaigns|default:0 }}</h3>
+                        </div>
+                    </div>
+                    <h6 class="card-title mb-0 text-secondary">Campaigns</h6>
+                    <p class="small text-muted mb-0">Active email campaigns</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="avatar-icon bg-warning-subtle rounded-3 p-3">
+                            <i class="bi bi-send fs-2 text-warning"></i>
+                        </div>
+                        <div class="text-end">
+                            <h3 class="mb-0">{{ messages_sent|default:0 }}</h3>
+                        </div>
+                    </div>
+                    <h6 class="card-title mb-0 text-secondary">Messages Sent</h6>
+                    <p class="small text-muted mb-0">Total emails delivered</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-graph-up me-2 text-primary"></i>
+                        Recent Activity
+                    </h5>
+                </div>
                 <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Lists</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_lists }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-list-ul fs-1 text-gray-300"></i>
-                        </div>
+                    <div class="text-center py-5">
+                        <i class="bi bi-bar-chart-line fs-1 text-muted mb-3"></i>
+                        <h6 class="text-muted">Activity Charts Coming Soon</h6>
+                        <p class="text-muted small">Real-time analytics and reporting will be available here</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Subscribers</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_subscribers }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-people fs-1 text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-lightning me-2 text-warning"></i>
+                        Quick Actions
+                    </h5>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Campaigns</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_campaigns }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-envelope fs-1 text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Messages Sent</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ messages_sent }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-send fs-1 text-gray-300"></i>
-                        </div>
+                    <div class="d-grid gap-3">
+                        <a href="/campaigns/create/" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            Create Campaign
+                        </a>
+                        <a href="/subscribers/import/" class="btn btn-outline-primary">
+                            <i class="bi bi-upload me-2"></i>
+                            Import Subscribers
+                        </a>
+                        <a href="/subscribers/segments/" class="btn btn-outline-secondary">
+                            <i class="bi bi-list-check me-2"></i>
+                            Manage Lists
+                        </a>
+                        <a href="/campaigns/send-test-email/" class="btn btn-outline-info">
+                            <i class="bi bi-send me-2"></i>
+                            Send Test Email
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
+
+<style>
+.avatar-icon {
+    transition: all 0.3s ease;
+}
+.card:hover .avatar-icon {
+    transform: scale(1.05);
+}
+.card {
+    transition: all 0.3s ease;
+}
+.btn {
+    transition: all 0.3s ease;
+}
+.btn:hover {
+    transform: translateY(-2px);
+}
+</style>
 {% endblock %}

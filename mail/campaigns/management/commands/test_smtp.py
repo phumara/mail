@@ -3,6 +3,7 @@ from django.utils import timezone
 from campaigns.models import SMTPProvider
 from campaigns.smtp_service import SMTPService, SMTPManager
 import json
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 class Command(BaseCommand):
@@ -24,11 +25,17 @@ class Command(BaseCommand):
             action='store_true',
             help='Output results in JSON format',
         )
+        parser.add_argument(
+            '--recipient-email',
+            type=str,
+            help='Optional: Email address to send a test email to during the connection test.',
+        )
 
     def handle(self, *args, **options):
         provider_name = options.get('provider')
         test_all = options.get('all')
         json_output = options.get('json')
+        recipient_email = options.get('recipient_email')
 
         if provider_name:
             # Test specific provider
@@ -39,13 +46,13 @@ class Command(BaseCommand):
                     provider = SMTPProvider.objects.get(name=provider_name, is_active=True)
 
                 service = SMTPService(provider)
-                result = service.test_connection()
+                result = service.test_connection(recipient_email=recipient_email)
 
                 if json_output:
                     self.stdout.write(json.dumps({
                         'provider': provider.name,
                         'result': result
-                    }, indent=2))
+                    }, indent=2, cls=DjangoJSONEncoder))
                 else:
                     if result['success']:
                         self.stdout.write(
@@ -77,7 +84,7 @@ class Command(BaseCommand):
 
             for provider in providers:
                 service = SMTPService(provider)
-                result = service.test_connection()
+                result = service.test_connection(recipient_email=recipient_email)
                 results[provider.name] = result
 
                 if not json_output:
@@ -91,7 +98,7 @@ class Command(BaseCommand):
                         )
 
             if json_output:
-                self.stdout.write(json.dumps({'results': results}, indent=2))
+                self.stdout.write(json.dumps({'results': results}, indent=2, cls=DjangoJSONEncoder))
 
             # Summary
             if not json_output:

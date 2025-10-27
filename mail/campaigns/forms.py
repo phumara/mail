@@ -1,6 +1,12 @@
 from django import forms
+from .models import Media, Campaign, EmailTemplate, SMTPProvider
+from subscribers.models import Segment
 
-from .models import Campaign, EmailTemplate
+class MediaForm(forms.ModelForm):
+    class Meta:
+        model = Media
+        fields = ['name', 'file']
+
 
 class CampaignForm(forms.ModelForm):
 
@@ -8,7 +14,7 @@ class CampaignForm(forms.ModelForm):
 
         model = Campaign
 
-        fields = ['name', 'subject', 'from_name', 'from_email', 'reply_to_email', 'template', 'html_content', 'text_content', 'subscriber_segments', 'smtp_provider', 'scheduled_at']
+        fields = ['name', 'subject', 'from_name', 'from_email', 'reply_to_email', 'template', 'html_content', 'text_content', 'subscriber_segments', 'smtp_provider']
 
     def __init__(self, *args, **kwargs):
 
@@ -23,12 +29,18 @@ class CampaignForm(forms.ModelForm):
         self.fields['from_email'].required = False
         self.fields['reply_to_email'].required = False
         self.fields['text_content'].required = False
-        self.fields['scheduled_at'].required = False
+
         self.fields['template'].required = False
-        
-        # Set up subscriber_lists field as a multiple select
+
+        # Set up subscriber_segments field as a multiple select
         self.fields['subscriber_segments'].widget = forms.CheckboxSelectMultiple()
+        self.fields['subscriber_segments'].queryset = Segment.objects.all()
         self.fields['subscriber_segments'].help_text = 'Select target subscriber segments (optional)'
+
+        # Configure smtp_provider field
+        self.fields['smtp_provider'].queryset = SMTPProvider.objects.filter(is_active=True)
+        self.fields['smtp_provider'].widget.attrs.update({'class': 'form-control'})
+        self.fields['smtp_provider'].empty_label = 'Use default if available'
         
         # Add placeholders and help text
         self.fields['name'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Enter campaign name'})
@@ -39,7 +51,7 @@ class CampaignForm(forms.ModelForm):
         self.fields['template'].widget.attrs.update({'class': 'form-control'})
         self.fields['html_content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'HTML email content', 'rows': 10})
         self.fields['text_content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Plain text email content (optional)', 'rows': 5})
-        self.fields['scheduled_at'].widget.attrs.update({'class': 'form-control', 'placeholder': 'YYYY-MM-DD HH:MM:SS'})
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -75,3 +87,45 @@ class TemplateForm(forms.ModelForm):
             'is_active': forms.CheckboxInput(attrs={'placeholder': 'Set as Active'}),
 
         }
+
+class SMTPProviderForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=False)
+
+    class Meta:
+        model = SMTPProvider
+        fields = [
+            'name', 'provider_type', 'is_active', 'is_default',
+            'host', 'port', 'use_tls', 'use_ssl', 'skip_tls_verify',
+            'username', 'password', 'api_key', 'api_secret',
+            'emails_per_day', 'emails_per_hour', 'emails_per_second',
+            'from_email', 'from_name', 'reply_to_email',
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'provider_type': forms.Select(attrs={'class': 'form-control'}),
+            'host': forms.TextInput(attrs={'class': 'form-control'}),
+            'port': forms.NumberInput(attrs={'class': 'form-control'}),
+            'use_tls': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'use_ssl': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'skip_tls_verify': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'password': forms.PasswordInput(attrs={'class': 'form-control'}), # Handled above
+            'api_key': forms.TextInput(attrs={'class': 'form-control'}),
+            'api_secret': forms.TextInput(attrs={'class': 'form-control'}),
+            'emails_per_day': forms.NumberInput(attrs={'class': 'form-control'}),
+            'emails_per_hour': forms.NumberInput(attrs={'class': 'form-control'}),
+            'emails_per_second': forms.NumberInput(attrs={'class': 'form-control'}),
+            'from_email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'from_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'reply_to_email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'is_default': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+    def save(self, commit=True):
+        provider = super().save(commit=False)
+        if self.cleaned_data['password']:
+            provider.password = self.cleaned_data['password']
+        if commit:
+            provider.save()
+        return provider

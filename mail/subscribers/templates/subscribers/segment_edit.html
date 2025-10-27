@@ -1,57 +1,64 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Edit Segment</h1>
 
-<h1>Edit List</h1>
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Please correct the following errors:</strong>
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
-<form method="post">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Segment Details</h6>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
 
-    {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_name" class="form-label">Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<div class="text-danger">{{ form.name.errors }}</div>{% endif %}
+                </div>
 
-    <div class="mb-3">
+                <div class="mb-3">
+                    <label for="id_description" class="form-label">Description</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}<div class="text-danger">{{ form.description.errors }}</div>{% endif %}
+                </div>
 
-        <label for="id_name">Name</label>
+                <div class="mb-3">
+                    <label for="id_type" class="form-label">Type</label>
+                    {{ form.type }}
+                    {% if form.type.errors %}<div class="text-danger">{{ form.type.errors }}</div>{% endif %}
+                </div>
 
-        {{ form.name }}
+                <div class="mb-3 form-check">
+                    {{ form.optin }}
+                    <label class="form-check-label" for="id_optin">Opt-in</label>
+                    {% if form.optin.errors %}<div class="text-danger">{{ form.optin.errors }}</div>{% endif %}
+                </div>
 
+                <div class="mb-3">
+                    <label for="id_tags" class="form-label">Tags</label>
+                    {{ form.tags }}
+                    {% if form.tags.errors %}<div class="text-danger">{{ form.tags.errors }}</div>{% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a href="{% url 'subscribers:segment_list' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
     </div>
-
-    <div class="mb-3">
-
-        <label for="id_description">Description</label>
-
-        {{ form.description }}
-
-    </div>
-
-    <div class="mb-3">
-
-        <label for="id_type">Type</label>
-
-        {{ form.type }}
-
-    </div>
-
-    <div class="mb-3">
-
-        <label for="id_optin">Opt-in</label>
-
-        {{ form.optin }}
-
-    </div>
-
-    <div class="mb-3">
-
-        <label for="id_tags">Tags</label>
-
-        {{ form.tags }}
-
-    </div>
-
-    <button type="submit" class="btn btn-primary">Update</button>
-
-    <a href="{% url 'segment_list' %}" class="btn btn-secondary">Cancel</a>
-
-</form>
-
+</div>
 {% endblock %}

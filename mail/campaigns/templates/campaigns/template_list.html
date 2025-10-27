@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">Email Templates</h1>
-        <a href="{% url 'template_create' %}" class="btn btn-primary">Create New Template</a>
+        <a href="{% url 'campaigns:template_create' %}" class="btn btn-primary">Create New Template</a>
     </div>
 
     <div class="card shadow mb-4">
@@ -37,8 +37,8 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{% url 'template_edit' template.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
-                                <a href="{% url 'template_delete' template.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                                <a href="{% url 'campaigns:template_edit' template.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'campaigns:template_delete' template.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                         {% empty %}

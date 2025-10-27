@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete User - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Confirm User Deletion</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Warning!</h5>
+                        <p>You are about to delete the user <strong>{{ user.username }}</strong>. This action cannot be undone.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6>User Details:</h6>
+                        <ul>
+                            <li><strong>Username:</strong> {{ user.username }}</li>
+                            <li><strong>Email:</strong> {{ user.email }}</li>
+                            <li><strong>Full Name:</strong> {{ user.get_full_name|default:"Not provided" }}</li>
+                            <li><strong>Account Created:</strong> {{ user.date_joined|date:"Y-m-d H:i" }}</li>
+                            <li><strong>Last Login:</strong> {{ user.last_login|date:"Y-m-d H:i"|default:"Never" }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <h6>What will be affected:</h6>
+                        <ul class="mb-0">
+                            <li>All subscribers created by this user will remain in the system</li>
+                            <li>All SMTP configurations created by this user will remain in the system</li>
+                            <li>Campaign history and email logs will be preserved</li>
+                            <li>The user account will be permanently deleted</li>
+                        </ul>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'accounts:user_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Delete User
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Alternative Actions</h5>
+                </div>
+                <div class="card-body">
+                    <p>If you want to prevent this user from accessing the system without deleting their data, consider:</p>
+                    
+                    <div class="list-group">
+                        <a href="{% url 'accounts:user_edit' user.pk %}" class="list-group-item list-group-item-action">
+                            <h6><i class="fas fa-user-slash"></i> Deactivate Account</h6>
+                            <p class="mb-0 small">Keep the user account but prevent login access</p>
+                        </a>
+                        <a href="{% url 'accounts:user_edit' user.pk %}" class="list-group-item list-group-item-action">
+                            <h6><i class="fas fa-key"></i> Change Permissions</h6>
+                            <p class="mb-0 small">Modify user permissions instead of deleting</p>
+                        </a>
+                    </div>
+
+                    <div class="alert alert-light mt-3">
+                        <small class="text-muted">
+                            <strong>Note:</strong> Deactivating a user is often preferable to deletion as it preserves audit trails and historical data while preventing system access.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

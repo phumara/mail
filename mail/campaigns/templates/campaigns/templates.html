@@ -1,9 +1,293 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container-fluid">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5">
+        <div class="mb-3 mb-md-0">
+            <h1 class="h2 mb-1">Email Templates</h1>
+            <p class="text-secondary mb-0">Manage and create professional email templates for your campaigns</p>
+        </div>
+        <a href="/campaigns/templates/create/" class="btn btn-primary d-flex align-items-center">
+            <i class="bi bi-plus-circle me-2"></i>
+            Create New Template
+        </a>
+    </div>
 
-<h1>Templates</h1>
+    <div class="row g-4 mb-5">
+        {% for template in templates %}
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 template-card">
+                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3">
+                    <div>
+                        <h5 class="card-title mb-1 fw-bold">
+                            {% if template.is_active %}
+                                <i class="bi bi-circle-fill text-success me-2" title="Active"></i>
+                            {% else %}
+                                <i class="bi bi-circle-fill text-secondary me-2" title="Inactive"></i>
+                            {% endif %}
+                            {{ template.name }}
+                        </h5>
+                        <small class="text-muted">Created {{ template.created_at|timesince }} ago</small>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-three-dots"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/campaigns/templates/template_edit/">
+                                <i class="bi bi-pencil me-2"></i>Edit
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="previewTemplate('{{ template.pk }}')">
+                                <i class="bi bi-eye me-2"></i>Preview
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="duplicateTemplate('{{ template.pk }}')">
+                                <i class="bi bi-copy me-2"></i>Duplicate
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="/campaigns/templates/template_delete/">
+                                <i class="bi bi-trash me-2"></i>Delete
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
 
-<p>Email template management coming soon...</p>
+                <div class="card-body">
+                    <div class="template-preview mb-3">
+                        <div class="badge bg-primary-subtle text-primary mb-2">
+                            <i class="bi bi-envelope me-1"></i>{{ template.subject|truncatechars:35 }}
+                        </div>
 
+                        <div class="text-preview">
+                            {% if template.html_content %}
+                                <div class="html-preview p-3 border rounded bg-light small">
+                                    {# Simple extraction of first few lines #}
+                                    {{ template.html_content|striptags|truncatechars:120 }}
+                                </div>
+                            {% else %}
+                                <div class="text-preview p-3 border rounded bg-light small">
+                                    {{ template.text_content|truncatechars:120 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="template-meta d-flex justify-content-between align-items-center">
+                        <div class="template-stats">
+                            <small class="text-muted">
+                                <i class="bi bi-code-slash me-1"></i>HTML
+                                {% if template.text_content %}
+                                <span class="badge bg-secondary ms-2">TXT</span>
+                                {% endif %}
+                            </small>
+                        </div>
+
+                        <div class="template-actions">
+                            <a href="/campaigns/templates/template_edit/" class="btn btn-sm btn-outline-primary me-2">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% if template.is_active %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle me-1"></i>Active
+                                </span>
+                            {% else %}
+                                <form method="post" action="{% url 'campaigns:template_toggle_active' template.pk %}" class="d-inline" onsubmit="return confirm('Activate this template?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-success" title="Activate template">
+                                        <i class="bi bi-play-circle"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {% if template.created_by %}
+                <div class="card-footer bg-transparent border-0">
+                    <small class="text-muted">
+                        <i class="bi bi-person me-1"></i>Created by {{ template.created_by.get_full_name|default:template.created_by.username }}
+                    </small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <!-- Empty State -->
+        <div class="col-12">
+            <div class="text-center py-5">
+                <div class="empty-state-icon mb-4">
+                    <i class="bi bi-file-earmark-text display-1 text-muted"></i>
+                </div>
+                <h4 class="text-muted mb-3">No templates yet</h4>
+                <p class="text-muted mb-4">Start building professional email templates for your campaigns to engage your audience effectively.</p>
+                <a href="/campaigns/templates/create/" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle me-2"></i>Create Your First Template
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Template Statistics -->
+    {% if templates %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-bar-chart-line me-2 text-primary"></i>Template Statistics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="avatar-icon bg-primary-subtle rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-file-earmark-text fs-4 text-primary"></i>
+                                </div>
+                                <h3 class="mb-1">{{ templates|length }}</h3>
+                                <p class="text-muted small mb-0">Total Templates</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="avatar-icon bg-success-subtle rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-check-circle fs-4 text-success"></i>
+                                </div>
+                                <h3 class="mb-1">{{ templates|length|add:"0" }}</h3>
+                                <p class="text-muted small mb-0">Active Templates</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="avatar-icon bg-info-subtle rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-code-slash fs-4 text-info"></i>
+                                </div>
+                                <h3 class="mb-1">{{ templates|length }}</h3>
+                                <p class="text-muted small mb-0">HTML Templates</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="avatar-icon bg-warning-subtle rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <i class="bi bi-file-text fs-4 text-warning"></i>
+                                </div>
+                                <h3 class="mb-1">{{ templates|length }}</h3>
+                                <p class="text-muted small mb-0">Text Templates</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.template-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.template-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.html-preview, .text-preview {
+    max-height: 80px;
+    overflow: hidden;
+    position: relative;
+}
+
+.html-preview::after, .text-preview::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(to bottom, transparent, white);
+    pointer-events: none;
+}
+
+.template-meta {
+    border-top: 1px solid #f0f2f5;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.stat-card {
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: #f8f9fa;
+    margin-bottom: 1rem;
+}
+
+.avatar-icon {
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover .avatar-icon {
+    transform: scale(1.1);
+}
+
+.empty-state-icon {
+    opacity: 0.3;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+    .d-flex.justify-content-between.align-items-start.align-items-md-center {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .stat-card {
+        margin-bottom: 1.5rem;
+    }
+}
+</style>
+
+<script>
+function previewTemplate(templateId) {
+    // Open template preview in new window or modal
+    window.open(`/admin/campaigns/emailtemplate/${templateId}/change/`, '_blank');
+}
+
+function duplicateTemplate(templateId) {
+    if (confirm('Are you sure you want to duplicate this template?')) {
+        // Create a duplicate via AJAX or redirect to create with pre-filled data
+        // For now, just show alert
+        alert('Template duplication feature coming soon. Please create a new template based on this one.');
+    }
+}
+
+// Enable tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
 {% endblock %}

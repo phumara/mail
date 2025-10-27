@@ -1,65 +1,43 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import logout
+from django.contrib import messages
+import datetime
 
-from django.utils import timezone
-
-from subscribers.models import Subscriber, Segment
-
-from campaigns.models import Campaign
 
 def home(request):
+    """Home page view with dashboard data"""
+    if request.user.is_authenticated:
+        # Get some basic stats for the dashboard
+        try:
+            from campaigns.models import Campaign, SMTPProvider, EmailLog
+            from subscribers.models import Subscriber, Segment
 
-    total_lists = Segment.objects.count()
+            total_lists = Segment.objects.count()
+            total_subscribers = Subscriber.objects.count()
+            total_campaigns = Campaign.objects.count()
+            messages_sent = EmailLog.objects.count()
+        except:
+            total_lists = 0
+            total_subscribers = 0
+            total_campaigns = 0
+            messages_sent = 0
 
-    public_lists = 1
+        context = {
+            'total_lists': total_lists,
+            'total_subscribers': total_subscribers,
+            'total_campaigns': total_campaigns,
+            'messages_sent': messages_sent,
+            'now': datetime.datetime.now(),
+        }
+        return render(request, 'home.html', context)
+    else:
+        return redirect('login')
 
-    private_lists = total_lists - public_lists
 
-    single_optin = total_lists - 1
-
-    double_optin = total_lists
-
-    total_subscribers = Subscriber.objects.count()
-
-    blocklisted = Subscriber.objects.filter(status='blocklisted').count()
-
-    orphans = 0
-
-    total_campaigns = Campaign.objects.count()
-
-    draft_campaigns = Campaign.objects.filter(status='draft').count()
-
-    finished_campaigns = Campaign.objects.filter(status='finished').count()
-
-    messages_sent = 637
-
-    context = {
-
-        'total_lists': total_lists,
-
-        'public_lists': public_lists,
-
-        'private_lists': private_lists,
-
-        'single_optin': single_optin,
-
-        'double_optin': double_optin,
-
-        'total_subscribers': total_subscribers,
-
-        'blocklisted': blocklisted,
-
-        'orphans': orphans,
-
-        'total_campaigns': total_campaigns,
-
-        'draft_campaigns': draft_campaigns,
-
-        'finished_campaigns': finished_campaigns,
-
-        'messages_sent': messages_sent,
-
-        'current_date': timezone.now().strftime('%a, %d %b %Y'),
-
-    }
-
-    return render(request, 'home.html', context)
+def custom_logout(request):
+    """Custom logout view that handles both GET and POST requests"""
+    if request.method in ['POST', 'GET']:
+        logout(request)
+        messages.success(request, 'You have been successfully logged out.')
+        return redirect('login')  # Redirect to login page instead of logout template
+    return redirect('home')

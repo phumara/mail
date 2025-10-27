@@ -10,13 +10,13 @@ from .smtp_service import SMTPService, SMTPManager
 
 @admin.register(SMTPProvider)
 class SMTPProviderAdmin(admin.ModelAdmin):
-    list_display = ['name', 'provider_type', 'is_active', 'delivery_rate', 'total_sent', 'last_used', 'test_connection_button']
-    list_filter = ['provider_type', 'is_active', 'created_at']
+    list_display = ['name', 'provider_type', 'is_active', 'is_default', 'delivery_rate', 'total_sent', 'last_used', 'test_connection_button']
+    list_filter = ['provider_type', 'is_active', 'is_default', 'created_at']
     search_fields = ['name', 'host', 'from_email']
     readonly_fields = ['total_sent', 'total_delivered', 'total_bounced', 'total_opened', 'total_clicked', 'created_at', 'updated_at']
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'provider_type', 'is_active')
+            'fields': ('name', 'provider_type', 'is_active', 'is_default')
         }),
         ('SMTP Settings', {
             'fields': ('host', 'port', 'use_tls', 'use_ssl')
@@ -152,10 +152,7 @@ class CampaignAdmin(admin.ModelAdmin):
         ('SMTP Provider', {
             'fields': ('smtp_provider',)
         }),
-        ('Scheduling', {
-            'fields': ('scheduled_at', 'sent_at'),
-            'classes': ('collapse',)
-        }),
+
         ('Statistics', {
             'fields': ('total_recipients', 'total_sent', 'total_delivered', 'total_opened', 'total_clicked', 'total_bounced', 'total_unsubscribed'),
             'classes': ('collapse',)

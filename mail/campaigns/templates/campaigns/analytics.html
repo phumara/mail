@@ -1,9 +1,117 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Campaign Analytics</h1>
 
-<h1>Analytics</h1>
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Engagement Overview</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="engagementChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<p>Campaign analytics coming soon...</p>
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top Campaigns by Open Rate</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4">
+                        <canvas id="topCampaignsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Detailed Campaign Statistics</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Sent</th>
+                            <th>Delivered</th>
+                            <th>Opened</th>
+                            <th>Clicked</th>
+                            <th>Bounced</th>
+                            <th>Delivery Rate</th>
+                            <th>Open Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in analytics %}
+                        <tr>
+                            <td><a href="{% url 'campaigns:campaign_analytics_detail' item.campaign.pk %}">{{ item.campaign.name }}</a></td>
+                            <td>{{ item.sent }}</td>
+                            <td>{{ item.delivered }}</td>
+                            <td>{{ item.opened }}</td>
+                            <td>{{ item.clicked }}</td>
+                            <td>{{ item.bounced }}</td>
+                            <td>{{ item.delivery_rate|floatformat:2 }}%</td>
+                            <td>{{ item.open_rate|floatformat:2 }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Engagement Overview Chart
+        var ctx = document.getElementById("engagementChart").getContext('2d');
+        var engagementChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [{% for item in analytics %}"{{ item.campaign.name }}",{% endfor %}],
+                datasets: [{
+                    label: "Open Rate (%)",
+                    borderColor: "#4e73df",
+                    data: [{% for item in analytics %}{{ item.open_rate }},{% endfor %}],
+                }, {
+                    label: "Delivery Rate (%)",
+                    borderColor: "#1cc88a",
+                    data: [{% for item in analytics %}{{ item.delivery_rate }},{% endfor %}],
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+        });
+
+        // Top Campaigns by Open Rate
+        var topCampaignsCtx = document.getElementById("topCampaignsChart").getContext('2d');
+        var topCampaignsChart = new Chart(topCampaignsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [{% for item in analytics|slice:":5" %}"{{ item.campaign.name }}",{% endfor %}],
+                datasets: [{
+                    data: [{% for item in analytics|slice:":5" %}{{ item.open_rate }},{% endfor %}],
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+        });
+    });
+</script>
 {% endblock %}

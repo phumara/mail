@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">Subscribers</h1>
-        <a href="{% url 'subscriber_create' %}" class="btn btn-primary">Add Subscriber</a>
+        <a href="{% url 'subscribers:subscriber_create' %}" class="btn btn-primary">Add Subscriber</a>
     </div>
 
     <div class="card shadow mb-4">
@@ -31,8 +31,8 @@
                             <td><span class="badge bg-secondary">{{ subscriber.status }}</span></td>
                             <td>{{ subscriber.created_at|date:"d M, Y" }}</td>
                             <td>
-                                <a href="{% url 'subscriber_edit' subscriber.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
-                                <a href="{% url 'subscriber_delete' subscriber.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                                <a href="{% url 'subscribers:subscriber_edit' subscriber.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'subscribers:subscriber_delete' subscriber.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                         {% endfor %}

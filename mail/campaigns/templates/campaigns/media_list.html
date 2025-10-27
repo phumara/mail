@@ -1,9 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<h1>Media List</h1>
-
-<p>Media files listing coming soon...</p>
-
+<div class="container">
+    <h1>Media List</h1>
+    <a href="{% url 'campaigns:media_upload' %}" class="btn btn-primary mb-3">Upload Media</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>File</th>
+                <th>Uploaded At</th>
+                <th>Uploaded By</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for media in media_files %}
+            <tr>
+                <td>{{ media.name }}</td>
+                <td><a href="{{ media.file.url }}">{{ media.file.name }}</a></td>
+                <td>{{ media.uploaded_at }}</td>
+                <td>{{ media.uploaded_by }}</td>
+                <td>
+                    <form action="{% url 'campaigns:media_delete' media.pk %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

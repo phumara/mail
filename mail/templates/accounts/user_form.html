@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit User{% else %}Create User{% endif %} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>{% if form.instance.pk %}Edit User{% else %}Create New User{% endif %}</h1>
+            <p class="text-muted">{% if form.instance.pk %}Update user details and permissions{% else %}Create a new user with specific permissions{% endif %}</p>
+
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.username.id_for_label }}" class="form-label">Username *</label>
+                                    {{ form.username }}
+                                    {% if form.username.errors %}
+                                        <div class="text-danger small">{{ form.username.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">Email *</label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="text-danger small">{{ form.email.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="text-danger small">{{ form.first_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="text-danger small">{{ form.last_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if not form.instance.pk %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.password1.id_for_label }}" class="form-label">Password *</label>
+                                    {{ form.password1 }}
+                                    {% if form.password1.errors %}
+                                        <div class="text-danger small">{{ form.password1.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password *</label>
+                                    {{ form.password2 }}
+                                    {% if form.password2.errors %}
+                                        <div class="text-danger small">{{ form.password2.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <hr>
+
+                        <h5 class="mb-3">User Status</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-check mb-3">
+                                    {{ form.is_staff }}
+                                    <label class="form-check-label" for="{{ form.is_staff.id_for_label }}">
+                                        Staff Status
+                                    </label>
+                                    <small class="form-text text-muted d-block">Designates whether the user can log into this admin site.</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mb-3">
+                                    {{ form.is_active }}
+                                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                        Active
+                                    </label>
+                                    <small class="form-text text-muted d-block">Designates whether this user should be treated as active.</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check mb-3">
+                                    {{ form.is_superuser }}
+                                    <label class="form-check-label" for="{{ form.is_superuser.id_for_label }}">
+                                        Superuser
+                                    </label>
+                                    <small class="form-text text-muted d-block">Designates that this user has all permissions without explicitly assigning them.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h5 class="mb-3">Subscriber Permissions</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check mb-3">
+                                    {{ form.can_manage_subscribers }}
+                                    <label class="form-check-label" for="{{ form.can_manage_subscribers.id_for_label }}">
+                                        Can Manage All Subscribers
+                                    </label>
+                                    <small class="form-text text-muted d-block">User can view, edit, and delete all subscribers in the system.</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check mb-3">
+                                    {{ form.can_add_own_subscribers }}
+                                    <label class="form-check-label" for="{{ form.can_add_own_subscribers.id_for_label }}">
+                                        Can Add Own Subscribers
+                                    </label>
+                                    <small class="form-text text-muted d-block">User can create subscribers that they own and manage.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'accounts:user_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if form.instance.pk %}Update User{% else %}Create User{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Permission Guidelines</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Subscriber Access</h6>
+                    <ul class="small">
+                        <li><strong>Manage All Subscribers:</strong> Can view, edit, and delete any subscriber</li>
+                        <li><strong>Add Own Subscribers:</strong> Can only create and manage their own subscribers</li>
+                    </ul>
+
+                    <h6>SMTP Configuration</h6>
+                    <ul class="small">
+                        <li>Users can only manage SMTP configurations they create</li>
+                        <li>Cannot access or modify other users' SMTP settings</li>
+                    </ul>
+
+                    <h6>User Roles</h6>
+                    <ul class="small">
+                        <li><strong>Superuser:</strong> Full system access</li>
+                        <li><strong>Staff:</strong> Can access admin interface</li>
+                        <li><strong>Active:</strong> Can log into the system</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

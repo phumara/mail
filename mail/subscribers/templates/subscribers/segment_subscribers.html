@@ -1,49 +1,133 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Subscribers in {{ segment.name }}</h1>
+        <a href="{% url 'subscribers:segment_list' %}" class="btn btn-secondary">Back to Lists</a>
+    </div>
 
-<h1>Subscribers in {{ segment.name }}</h1>
-
-<a href="{% url 'segment_list' %}" class="btn btn-secondary">Back to Lists</a>
-
-<table class="table table-striped">
-
-    <thead>
-
-        <tr>
-
-            <th>Email</th>
-
-            <th>Name</th>
-
-            <th>Status</th>
-
-            <th>Created</th>
-
-        </tr>
-
-    </thead>
-
-    <tbody>
-
-        {% for subscriber in subscribers %}
-
-        <tr>
-
-            <td>{{ subscriber.email }}</td>
-
-            <td>{{ subscriber.name }}</td>
-
-            <td>{{ subscriber.status }}</td>
-
-            <td>{{ subscriber.created_at }}</td>
-
-        </tr>
-
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         {% endfor %}
+    {% endif %}
 
-    </tbody>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Current Subscribers</h6>
+        </div>
+        <div class="card-body">
+            {% if subscribers %}
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subscriber in subscribers %}
+                        <tr>
+                            <td>{{ subscriber.email }}</td>
+                            <td>{{ subscriber.name }}</td>
+                            <td>{{ subscriber.status }}</td>
+                            <td>{{ subscriber.created_at|date:"D, d M Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>No subscribers in this segment yet.</p>
+            {% endif %}
+        </div>
+    </div>
 
-</table>
+    <div class="card shadow mb-4 mt-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Add Existing Subscribers</h6>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="subscriber-search" class="form-label">Search for subscribers to add (not yet in this segment):</label>
+                <input type="text" id="subscriber-search" class="form-control" placeholder="Search by email, name, or status...">
+            </div>
 
+            <form method="post" action="{% url 'subscribers:segment_subscribers' segment.pk %}" id="add-subscribers-form">
+                {% csrf_token %}
+                <div id="search-results-container">
+                    <!-- AJAX results will be loaded here -->
+                    <p>Start typing to search for subscribers.</p>
+                </div>
+                <button type="submit" class="btn btn-success mt-3" id="add-selected-btn" style="display: none;">Add Selected Subscribers</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('subscriber-search');
+        const searchResultsContainer = document.getElementById('search-results-container');
+        const addSelectedBtn = document.getElementById('add-selected-btn');
+        const segmentId = {{ segment.pk }};
+
+        let searchTimeout;
+
+        searchInput.addEventListener('keyup', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function() {
+                const query = searchInput.value;
+                if (query.length > 2) {
+                    fetch(`/subscribers/search-subscribers/?q=${query}&segment_id=${segmentId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            displaySearchResults(data);
+                        });
+                } else {
+                    searchResultsContainer.innerHTML = '<p>Start typing to search for subscribers.</p>';
+                    addSelectedBtn.style.display = 'none';
+                }
+            }, 300);
+        });
+
+        function displaySearchResults(data) {
+            if (data.subscribers.length > 0) {
+                let html = '';
+                html += '<div class="table-responsive"><table class="table table-bordered" width="100%" cellspacing="0"><thead><tr>';
+                html += '<th><input type="checkbox" id="select-all-search-results"></th>';
+                html += '<th>Email</th><th>Name</th><th>Status</th></tr></thead><tbody>';
+                data.subscribers.forEach(subscriber => {
+                    html += `<tr>
+                                <td><input type="checkbox" name="subscriber_ids" value="${subscriber.pk}"></td>
+                                <td>${subscriber.email}</td>
+                                <td>${subscriber.name}</td>
+                                <td>${subscriber.status}</td>
+                            </tr>`;
+                });
+                html += '</tbody></table></div>';
+                searchResultsContainer.innerHTML = html;
+                addSelectedBtn.style.display = 'block';
+
+                document.getElementById('select-all-search-results').onclick = function() {
+                    var checkboxes = document.querySelectorAll('#search-results-container input[name="subscriber_ids"]');
+                    for (var i = 0; i < checkboxes.length; i++) {
+                        checkboxes[i].checked = this.checked;
+                    }
+                };
+
+            } else {
+                searchResultsContainer.innerHTML = '<p>No subscribers found matching your query not already in this segment.</p>';
+                addSelectedBtn.style.display = 'none';
+            }
+        }
+    });
+</script>
 {% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">SMTP Manager</h1>
+        <a href="{% url 'campaigns:smtp_provider_create' %}" class="btn btn-primary">Add New SMTP Provider</a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">SMTP Providers</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Host</th>
+                            <th>Port</th>
+                            <th>Active</th>
+                            <th>Default</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for provider in providers %}
+                        <tr>
+                            <td>{{ provider.name }}</td>
+                            <td>{{ provider.get_provider_type_display }}</td>
+                            <td>{{ provider.host }}</td>
+                            <td>{{ provider.port }}</td>
+                            <td>
+                                {% if provider.is_active %}
+                                    <span class="badge bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-danger">No</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if provider.is_default %}
+                                    <span class="badge bg-primary">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">No</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-info test-connection-btn" data-provider-id="{{ provider.pk }}" data-bs-toggle="tooltip" title="Test Connection"><i class="bi bi-plug"></i> Test</button>
+                                <a href="{% url 'campaigns:smtp_provider_edit' provider.pk %}" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'campaigns:smtp_provider_delete' provider.pk %}" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete"><i class="bi bi-trash"></i></a>
+                                <span id="test-result-{{ provider.pk }}" class="ms-2"></span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.test-connection-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const providerId = this.dataset.providerId;
+                const testResultSpan = document.getElementById(`test-result-${providerId}`);
+                testResultSpan.innerHTML = '<span class="text-warning">Testing...</span>';
+
+                fetch(`/campaigns/smtp-manager/test/${providerId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        testResultSpan.innerHTML = `<span class="text-success">${data.message}</span>`;
+                    } else {
+                        testResultSpan.innerHTML = `<span class="text-danger">${data.message}</span>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    testResultSpan.innerHTML = '<span class="text-danger">Error during test.</span>';
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

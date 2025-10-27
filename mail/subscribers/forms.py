@@ -17,3 +17,10 @@ class SegmentForm(forms.ModelForm):
         model = Segment
 
         fields = ['name', 'description', 'type', 'optin', 'tags']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'type': forms.Select(attrs={'class': 'form-control'}),
+            'optin': forms.Select(attrs={'class': 'form-control'}),
+            'tags': forms.TextInput(attrs={'class': 'form-control'}),
+        }

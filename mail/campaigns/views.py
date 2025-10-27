@@ -5,37 +5,82 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import SMTPProvider, Campaign, EmailLog, EmailTemplate
-from .forms import CampaignForm, TemplateForm
+from .forms import CampaignForm, TemplateForm, SMTPProviderForm
 from .smtp_service import SMTPService, SMTPManager
+from subscribers.models import Subscriber
 import json
 import traceback
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
+from .models import Media
+from .forms import MediaForm
 
 
 @login_required
-def smtp_dashboard(request):
-    """Dashboard view for SMTP providers"""
-    providers = SMTPProvider.objects.all()
-    stats = []
-
-    for provider in providers:
-        service = SMTPService(provider)
-        connection_test = service.test_connection()
-
-        stats.append({
-            'provider': provider,
-            'connection_status': connection_test['success'],
-            'connection_message': connection_test['message'],
-            'delivery_rate': provider.get_delivery_rate(),
-            'is_within_limits': provider.is_within_limits()
-        })
-
+def smtp_manager(request):
+    """View for managing SMTP providers with user-specific permissions"""
+    # Users can only see their own SMTP providers
+    providers = SMTPProvider.objects.filter(created_by=request.user)
+    
     context = {
-        'stats': stats,
-        'total_providers': providers.count(),
-        'active_providers': providers.filter(is_active=True).count(),
+        'providers': providers,
     }
 
-    return render(request, 'campaigns/smtp_dashboard.html', context)
+    return render(request, 'campaigns/smtp_manager.html', context)
+
+
+@login_required
+def smtp_provider_create(request):
+    """Create a new SMTP provider"""
+    if request.method == 'POST':
+        form = SMTPProviderForm(request.POST)
+        if form.is_valid():
+            provider = form.save(commit=False)
+            provider.created_by = request.user
+            provider.save()
+            messages.success(request, 'SMTP Provider created successfully!')
+            return redirect('campaigns:smtp_manager')
+    else:
+        form = SMTPProviderForm()
+    return render(request, 'campaigns/smtp_provider_form.html', {'form': form, 'title': 'Create SMTP Provider'})
+
+
+@login_required
+def smtp_provider_edit(request, pk):
+    """Edit an existing SMTP provider"""
+    provider = get_object_or_404(SMTPProvider, pk=pk)
+    
+    # Check if user has permission to edit this provider
+    if provider.created_by != request.user:
+        messages.error(request, 'You don\'t have permission to edit this SMTP provider.')
+        return redirect('campaigns:smtp_manager')
+    
+    if request.method == 'POST':
+        form = SMTPProviderForm(request.POST, instance=provider)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'SMTP Provider updated successfully!')
+            return redirect('campaigns:smtp_manager')
+    else:
+        form = SMTPProviderForm(instance=provider)
+    return render(request, 'campaigns/smtp_provider_form.html', {'form': form, 'title': 'Edit SMTP Provider'})
+
+
+@login_required
+def smtp_provider_delete(request, pk):
+    """Delete an SMTP provider"""
+    provider = get_object_or_404(SMTPProvider, pk=pk)
+    
+    # Check if user has permission to delete this provider
+    if provider.created_by != request.user:
+        messages.error(request, 'You don\'t have permission to delete this SMTP provider.')
+        return redirect('campaigns:smtp_manager')
+    
+    if request.method == 'POST':
+        provider.delete()
+        messages.success(request, 'SMTP Provider deleted successfully!')
+        return redirect('campaigns:smtp_manager')
+    return render(request, 'campaigns/smtp_provider_confirm_delete.html', {'provider': provider})
 
 
 @login_required
@@ -44,6 +89,14 @@ def test_smtp_connection(request, provider_id):
     """AJAX view to test SMTP connection"""
     try:
         provider = get_object_or_404(SMTPProvider, id=provider_id)
+        
+        # Check if user has permission to test this provider
+        if provider.created_by != request.user:
+            return JsonResponse({
+                'success': False,
+                'message': 'You don\'t have permission to test this SMTP provider.'
+            })
+        
         service = SMTPService(provider)
         result = service.test_connection()
 
@@ -54,6 +107,45 @@ def test_smtp_connection(request, provider_id):
             'success': False,
             'message': f'Test failed: {str(e)}'
         })
+
+
+@login_required
+def send_test_email(request):
+    """View to send a test email"""
+    error = None
+    to_email = ''
+    if request.method == 'POST':
+        to_email = request.POST.get('to_email')
+        if not to_email:
+            error = 'Please fill out this field.'
+        else:
+            # Get default SMTP provider
+            default_provider = SMTPProvider.objects.filter(is_default=True, is_active=True).first()
+            if not default_provider:
+                messages.error(request, 'No default SMTP provider set.')
+            else:
+                # Send test email
+                service = SMTPService(default_provider)
+                result = service.send_email(
+                    to_email=to_email,
+                    subject='Test Email',
+                    html_content='<p>This is a test email from your mail system.</p>',
+                    text_content='This is a test email from your mail system.'
+                )
+        
+                if result['success']:
+                    messages.success(request, 'Test email sent successfully!')
+                else:
+                    messages.error(request, f'Failed to send test email: {result.get("error", "Unknown error")}')
+
+    # For GET or after POST, show the form
+    default_provider = SMTPProvider.objects.filter(is_default=True, is_active=True).first()
+    if default_provider:
+        from_email_display = f"{default_provider.from_name} <{default_provider.from_email}>"
+    else:
+        from_email_display = 'No default provider set'
+
+    return render(request, 'campaigns/send_test_email.html', {'from_email': from_email_display, 'to_email': to_email, 'error': error})
 
 
 @login_required
@@ -151,7 +243,7 @@ def campaign_create(request):
         if form.is_valid():
             campaign = form.save()
             messages.success(request, f'Campaign "{campaign.name}" created successfully!')
-            return redirect('campaign_list')
+            return redirect('campaigns:campaign_list')
     else:
         form = CampaignForm()
     return render(request, 'campaigns/campaign_create.html', {'form': form})
@@ -165,7 +257,7 @@ def campaign_create_simple(request):
         if form.is_valid():
             campaign = form.save()
             messages.success(request, f'Campaign "{campaign.name}" created successfully!')
-            return redirect('campaign_list')
+            return redirect('campaigns:campaign_list')
     else:
         form = CampaignForm()
     return render(request, 'campaigns/campaign_create_simple.html', {'form': form})
@@ -180,10 +272,10 @@ def campaign_edit(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f'Campaign "{campaign.name}" updated successfully!')
-            return redirect('campaign_list')
+            return redirect('campaigns:campaign_list')
     else:
         form = CampaignForm(instance=campaign)
-    return render(request, 'campaigns/campaign_edit.html', {'form': form, 'campaign': campaign})
+    return render(request, 'campaigns/edit.html', {'form': form, 'campaign': campaign})
 
 
 @login_required
@@ -193,14 +285,132 @@ def campaign_delete(request, pk):
     if request.method == 'POST':
         campaign.delete()
         messages.success(request, f'Campaign "{campaign.name}" deleted successfully!')
-        return redirect('campaign_list')
+        return redirect('campaigns:campaign_list')
     return render(request, 'campaigns/campaign_delete.html', {'campaign': campaign})
 
 
 @login_required
-def media_list(request):
-    """List media files"""
-    return render(request, 'campaigns/media_list.html')
+def campaign_preview(request, pk):
+    """Preview a campaign's HTML content"""
+    campaign = get_object_or_404(Campaign, pk=pk)
+    return render(request, 'campaigns/campaign_preview.html', {'campaign': campaign})
+
+
+@login_required
+def campaign_clone(request, pk):
+    """Clone an existing campaign"""
+    original_campaign = get_object_or_404(Campaign, pk=pk)
+    
+    # Create a new campaign object by copying values
+    new_campaign = Campaign(
+        name=f'{original_campaign.name} (Clone)',
+        subject=original_campaign.subject,
+        from_email=original_campaign.from_email,
+        from_name=original_campaign.from_name,
+        reply_to_email=original_campaign.reply_to_email,
+        html_content=original_campaign.html_content,
+        text_content=original_campaign.text_content,
+        template=original_campaign.template,
+        smtp_provider=original_campaign.smtp_provider,
+        status='draft', # Cloned campaigns start as drafts
+        created_by=request.user # Assign current user as creator
+    )
+    new_campaign.save()
+
+    # Copy ManyToMany relationships (subscriber_segments)
+    new_campaign.subscriber_segments.set(original_campaign.subscriber_segments.all())
+
+    messages.success(request, f'Campaign "{new_campaign.name}" cloned successfully!')
+    return redirect('campaigns:campaign_edit', pk=new_campaign.pk)
+
+
+@login_required
+def campaign_send(request, pk):
+    """Send a campaign to selected segments"""
+    campaign = get_object_or_404(Campaign, pk=pk)
+
+    if campaign.status != 'draft':
+        messages.error(request, f'Campaign "{campaign.name}" cannot be sent as it is not in draft status.')
+        return redirect('campaigns:campaign_list')
+
+    if not campaign.subscriber_segments.exists():
+        messages.error(request, f'Campaign "{campaign.name}" has no target segments selected.')
+        return redirect('campaigns:campaign_edit', pk=campaign.pk)
+
+    if not campaign.smtp_provider:
+        default_provider = SMTPProvider.objects.filter(is_default=True, is_active=True).first()
+        if default_provider:
+            campaign.smtp_provider = default_provider
+            campaign.save() # Save the campaign with the default provider
+        else:
+            messages.error(request, f'Campaign "{campaign.name}" has no SMTP provider selected and no default active provider is set.')
+            return redirect('campaigns:campaign_edit', pk=campaign.pk)
+
+    # Update campaign status to sending
+    campaign.status = 'sending'
+    campaign.save()
+
+    total_sent_count = 0
+    smtp_service = SMTPService(campaign.smtp_provider)
+
+    # Get all unique subscribers from the selected segments
+    subscribers_to_send = Subscriber.objects.filter(segments__in=campaign.subscriber_segments.all()).distinct()
+
+    for subscriber in subscribers_to_send:
+        try:
+            # Replace placeholders in subject and content
+            subject = campaign.subject.replace('{subscriber.name}', subscriber.name or '').replace('{subscriber.email}', subscriber.email)
+            html_content = campaign.html_content.replace('{subscriber.name}', subscriber.name or '').replace('{subscriber.email}', subscriber.email)
+            text_content = campaign.text_content.replace('{subscriber.name}', subscriber.name or '').replace('{subscriber.email}', subscriber.email)
+
+            success = smtp_service.send_email(
+                to_email=subscriber.email,
+                subject=subject,
+                html_content=html_content,
+                text_content=text_content,
+            )
+
+            if success:
+                total_sent_count += 1
+                EmailLog.objects.create(
+                    campaign=campaign,
+                    subscriber_email=subscriber.email,
+                    smtp_provider=campaign.smtp_provider,
+                    subject=subject,
+                    status='sent',
+                    sent_at=timezone.now()
+                )
+            else:
+                EmailLog.objects.create(
+                    campaign=campaign,
+                    subscriber_email=subscriber.email,
+                    smtp_provider=campaign.smtp_provider,
+                    subject=subject,
+                    status='failed',
+                    error_message='SMTP service failed to send email.',
+                    sent_at=timezone.now()
+                )
+        except Exception as e:
+            EmailLog.objects.create(
+                campaign=campaign,
+                subscriber_email=subscriber.email,
+                smtp_provider=campaign.smtp_provider,
+                subject=campaign.subject,
+                status='failed',
+                error_message=f'Error sending email: {str(e)}',
+                sent_at=timezone.now()
+            )
+            messages.error(request, f'Error sending email to {subscriber.email}: {str(e)}')
+
+    # Update campaign status and sent count after sending attempts
+    campaign.total_recipients = subscribers_to_send.count()
+    campaign.total_sent = total_sent_count
+    campaign.status = 'sent'
+    campaign.sent_at = timezone.now()
+    campaign.save()
+
+    messages.success(request, f'Campaign "{campaign.name}" sent to {total_sent_count} recipients.')
+    return redirect('campaigns:campaign_list')
 
 
 @login_required
@@ -216,7 +426,9 @@ def template_create(request):
     if request.method == 'POST':
         form = TemplateForm(request.POST)
         if form.is_valid():
-            template = form.save()
+            template = form.save(commit=False)
+            template.created_by = request.user
+            template.save()
             messages.success(request, f'Template "{template.name}" created successfully!')
             return redirect('campaigns:template_list')
     else:
@@ -248,3 +460,39 @@ def template_delete(request, pk):
         messages.success(request, f'Template "{template.name}" deleted successfully!')
         return redirect('campaigns:template_list')
     return render(request, 'campaigns/template_delete.html', {'template': template})
+
+
+@login_required
+def smtp_settings(request):
+    """Redirects to the SMTPProvider admin page."""
+    return redirect('/admin/campaigns/smtpprovider/')
+
+class MediaListView(View):
+    """View to display a list of media files"""
+    def get(self, request):
+        media_files = Media.objects.all()
+        return render(request, 'campaigns/media_list.html', {'media_files': media_files})
+
+
+class MediaUploadView(View):
+    """View to handle media file uploads"""
+    def get(self, request):
+        form = MediaForm()
+        return render(request, 'campaigns/media_upload.html', {'form': form})
+
+    def post(self, request):
+        form = MediaForm(request.POST, request.FILES)
+        if form.is_valid():
+            media = form.save(commit=False)
+            media.uploaded_by = request.user
+            media.save()
+            return redirect('campaigns:media_list')
+        return render(request, 'campaigns/media_upload.html', {'form': form})
+
+
+class MediaDeleteView(View):
+    """View to delete a media file"""
+    def post(self, request, pk):
+        media = get_object_or_404(Media, pk=pk)
+        media.delete()
+        return redirect('campaigns:media_list')

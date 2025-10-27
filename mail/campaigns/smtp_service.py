@@ -22,7 +22,7 @@ class SMTPService:
         self.provider = provider
         self.connection = None
 
-    def test_connection(self) -> Dict[str, Any]:
+    def test_connection(self, recipient_email: str = None) -> Dict[str, Any]:
         """
         Test SMTP connection and authentication
         Returns: Dict with success status and message
@@ -31,53 +31,12 @@ class SMTPService:
             if self.provider.provider_type in ['sendgrid', 'mailgun', 'ses', 'postmark']:
                 return self._test_api_connection()
             else:
-                return self._test_smtp_connection()
+                return self._test_smtp_connection(recipient_email=recipient_email)
         except Exception as e:
             logger.error(f"Connection test failed for {self.provider.name}: {str(e)}")
             return {
                 'success': False,
                 'message': f'Connection failed: {str(e)}'
-            }
-
-    def _test_smtp_connection(self) -> Dict[str, Any]:
-        """Test traditional SMTP connection"""
-        try:
-            # Create SMTP connection
-            if self.provider.use_ssl:
-                server = smtplib.SMTP_SSL(self.provider.host, self.provider.port)
-            else:
-                server = smtplib.SMTP(self.provider.host, self.provider.port)
-                if self.provider.use_tls:
-                    server.starttls()
-
-            # Test authentication
-            if self.provider.username and self.provider.password:
-                server.login(self.provider.username, self.provider.password)
-
-            # Test sending capabilities
-            server.noop()
-
-            server.quit()
-
-            return {
-                'success': True,
-                'message': 'SMTP connection successful'
-            }
-
-        except smtplib.SMTPAuthenticationError:
-            return {
-                'success': False,
-                'message': 'Authentication failed. Check username and password.'
-            }
-        except smtplib.SMTPConnectError:
-            return {
-                'success': False,
-                'message': 'Connection failed. Check host and port settings.'
-            }
-        except Exception as e:
-            return {
-                'success': False,
-                'message': f'Connection test failed: {str(e)}'
             }
 
     def _test_api_connection(self) -> Dict[str, Any]:
@@ -97,10 +56,113 @@ class SMTPService:
                     'message': 'Unsupported API provider'
                 }
         except Exception as e:
+            logger.error(f"API connection test failed for {self.provider.name}: {str(e)}")
             return {
                 'success': False,
                 'message': f'API connection test failed: {str(e)}'
             }
+
+    def _test_smtp_connection(self, recipient_email: str = None) -> Dict[str, Any]:
+        """
+        Test traditional SMTP connection
+        """
+        import socket # Import socket for specific error handling
+        try:
+            # Create SMTP connection
+            # Special handling for Gmail
+            if self.provider.host == 'smtp.gmail.com':
+                # Gmail requires STARTTLS on port 587
+                server = smtplib.SMTP(self.provider.host, self.provider.port)
+                server.starttls()
+            else:
+                context = ssl.create_default_context()
+                if self.provider.skip_tls_verify:
+                    context.check_hostname = False
+                    context.verify_mode = ssl.CERT_NONE
+
+                if self.provider.use_ssl:
+                    server = smtplib.SMTP_SSL(self.provider.host, self.provider.port, context=context)
+                else:
+                    server = smtplib.SMTP(self.provider.host, self.provider.port)
+                    if self.provider.use_tls:
+                        server.starttls(context=context)
+        except socket.gaierror:
+            return {
+                'success': False,
+                'message': f'Connection failed: Hostname \'{self.provider.host}\' could not be resolved.'
+            }
+        except ConnectionRefusedError:
+            return {
+                'success': False,
+                'message': f'Connection failed: Connection refused by {self.provider.host}:{self.provider.port}. Check host, port, and firewall settings.'
+            }
+        except smtplib.SMTPConnectError as e:
+            return {
+                'success': False,
+                'message': f'Connection failed: {str(e)}. Check host and port settings.'
+            }
+
+        # Test authentication
+        if self.provider.username and self.provider.password:
+            try:
+                server.login(self.provider.username, self.provider.password)
+            except smtplib.SMTPAuthenticationError:
+                return {
+                    'success': False,
+                    'message': 'Authentication failed. Check username and password.'
+                }
+
+        # Determine the recipient for the test email
+        test_recipient = recipient_email if recipient_email else "nobody@example.com"
+
+        # Test sending capabilities by sending a dummy email
+        try:
+            from email.mime.text import MIMEText
+            msg = MIMEText("This is a test email from your Mail System.")
+            msg['Subject'] = "SMTP Connection Test"
+            msg['From'] = self.provider.from_email
+            msg['To'] = test_recipient
+            server.sendmail(self.provider.from_email, test_recipient, msg.as_string())
+            server.noop() # Check server status
+        except smtplib.SMTPSenderRefused as e:
+            return {
+                'success': False,
+                'message': f'Sender refused: {str(e)}. Check \'From Email\' setting.'
+            }
+        except smtplib.SMTPRecipientsRefused as e:
+            return {
+                'success': False,
+                'message': f'Recipient refused: {str(e)}. The test recipient \'{test_recipient}\' was refused by the server.'
+            }
+        except smtplib.SMTPDataError as e:
+            return {
+                'success': False,
+                'message': f'Data error during send: {str(e)}. The server refused to accept the email data.'
+            }
+        except smtplib.SMTPException as e:
+            return {
+                'success': False,
+                'message': f'SMTP error during send test: {str(e)}'
+            }
+
+        except smtplib.SMTPException as e:
+            return {
+                'success': False,
+                'message': f'An unexpected SMTP error occurred: {str(e)}'
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'message': f'An unexpected error occurred during SMTP connection test: {str(e)}'
+            }
+        finally:
+            if server:
+                server.quit()
+
+        return {
+            'success': True,
+            'message': 'SMTP connection and send test successful.'
+        }
 
     def _test_sendgrid_connection(self) -> Dict[str, Any]:
         """Test SendGrid API connection"""
@@ -200,12 +262,22 @@ class SMTPService:
                     self._add_attachment(msg, attachment)
 
             # Send email
-            if self.provider.use_ssl:
-                server = smtplib.SMTP_SSL(self.provider.host, self.provider.port)
-            else:
+            # Special handling for Gmail
+            if self.provider.host == 'smtp.gmail.com':
                 server = smtplib.SMTP(self.provider.host, self.provider.port)
-                if self.provider.use_tls:
-                    server.starttls()
+                server.starttls()
+            else:
+                context = ssl.create_default_context()
+                if self.provider.skip_tls_verify:
+                    context.check_hostname = False
+                    context.verify_mode = ssl.CERT_NONE
+
+                if self.provider.use_ssl:
+                    server = smtplib.SMTP_SSL(self.provider.host, self.provider.port, context=context)
+                else:
+                    server = smtplib.SMTP(self.provider.host, self.provider.port)
+                    if self.provider.use_tls:
+                        server.starttls(context=context)
 
             if self.provider.username and self.provider.password:
                 server.login(self.provider.username, self.provider.password)

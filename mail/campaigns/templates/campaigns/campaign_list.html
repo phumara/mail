@@ -2,49 +2,180 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-gray-800">All Campaigns</h1>
-        <a href="{% url 'campaign_create' %}" class="btn btn-primary">Create New</a>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-5">
+        <div class="mb-3 mb-md-0">
+            <h1 class="h2 mb-1">Campaigns</h1>
+            <p class="text-secondary mb-0">Manage your email campaigns and track their performance</p>
+        </div>
+        <a href="/campaigns/create/" class="btn btn-primary d-flex align-items-center">
+            <i class="bi bi-plus-circle me-2"></i>
+            Create New Campaign
+        </a>
     </div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Campaigns</h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Subject</th>
-                            <th>Status</th>
-                            <th>Segments</th>
-                            <th>Created</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for campaign in campaigns %}
-                        <tr>
-                            <td>{{ campaign.name }}</td>
-                            <td>{{ campaign.subject }}</td>
-                            <td>
-                                <span class="badge bg-{% if campaign.status == 'draft' %}secondary{% elif campaign.status == 'scheduled' %}info{% elif campaign.status == 'running' %}warning{% else %}success{% endif %}">{{ campaign.get_status_display }}</span>
-                            </td>
-                            <td>{{ campaign.segments.count }}</td>
-                            <td>{{ campaign.created_at|date:"D, d M Y" }}</td>
-                            <td>
-                                <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="View"><i class="bi bi-eye"></i></a>
-                                <a href="{% url 'campaign_edit' campaign.pk %}" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Edit"><i class="bi bi-pencil"></i></a>
-                                <a href="{% url 'campaign_delete' campaign.pk %}" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete"><i class="bi bi-trash"></i></a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    <div class="card">
+        <div class="card-header bg-white border-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-envelope-paper me-2 text-primary"></i>
+                    All Campaigns ({{ campaigns|length }})
+                </h5>
+                <div class="input-group" style="width: 300px;">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" placeholder="Search campaigns..." id="campaignSearch">
+                </div>
             </div>
+        </div>
+        <div class="card-body p-0">
+            {% if campaigns %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="campaignsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">
+                                    <i class="bi bi-tag me-2 text-muted"></i>Name
+                                </th>
+                                <th>
+                                    <i class="bi bi-chat-quote me-2 text-muted"></i>Subject
+                                </th>
+                                <th>
+                                    <i class="bi bi-circle-fill me-2 text-muted"></i>Status
+                                </th>
+                                <th class="text-center">
+                                    <i class="bi bi-send me-2 text-muted"></i>Sent
+                                </th>
+                                <th>
+                                    <i class="bi bi-people me-2 text-muted"></i>Segments
+                                </th>
+                                <th>
+                                    <i class="bi bi-calendar me-2 text-muted"></i>Created
+                                </th>
+                                <th class="text-center pe-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for campaign in campaigns %}
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                                            <i class="bi bi-envelope text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <strong>{{ campaign.name }}</strong>
+                                            {% if campaign.description %}
+                                                <br><small class="text-muted">{{ campaign.description|truncatechars:50 }}</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="fw-medium">{{ campaign.subject|truncatechars:40 }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge fs-6 px-3 py-1 {% if campaign.status == 'draft' %}bg-secondary{% elif campaign.status == 'scheduled' %}bg-info{% elif campaign.status == 'running' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                        <i class="bi bi-{% if campaign.status == 'draft' %}pencil{% elif campaign.status == 'scheduled' %}clock{% elif campaign.status == 'running' %}play-circle{% else %}check-circle{% endif %} me-1"></i>
+                                        {{ campaign.get_status_display|capfirst }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="fw-bold">{{ campaign.total_sent }}</span>
+                                </td>
+                                <td>
+                                    {% for segment in campaign.subscriber_segments.all %}
+                                        <span class="badge bg-light text-dark me-1">{{ segment.name }}</span>
+                                    {% empty %}
+                                        <span class="text-muted">No segments</span>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="fw-medium">{{ campaign.created_at|date:"M d, Y" }}</div>
+                                        <small class="text-muted">{{ campaign.created_at|timesince }}</small>
+                                    </div>
+                                </td>
+                                <td class="text-center pe-4">
+                                    <div class="btn-group" role="group">
+                                        {% if campaign.status == 'draft' %}
+                                            <a href="/campaigns/campaign_send/" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Send Campaign">
+                                                <i class="bi bi-send"></i>
+                                            </a>
+                                        {% endif %}
+                                        <a href="/campaigns/campaign_preview/" class="btn btn-sm btn-outline-info" data-bs-toggle="tooltip" title="Preview">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="/campaigns/campaign_clone/" class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip" title="Clone">
+                                            <i class="bi bi-copy"></i>
+                                        </a>
+                                        <a href="/campaigns/campaign_edit/" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="/campaigns/campaign_delete/" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox fs-1 text-muted mb-3"></i>
+                    <h5 class="text-muted">No campaigns yet</h5>
+                    <p class="text-muted">Create your first campaign to get started with email marketing</p>
+                    <a href="/campaigns/create/" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Create Your First Campaign
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
+
+<style>
+.table th {
+    font-weight: 600;
+    border-bottom: 2px solid #e2e8f0;
+    vertical-align: middle;
+}
+.table td {
+    vertical-align: middle;
+}
+.btn-group .btn {
+    margin: 0 1px;
+}
+.btn-group .btn:hover {
+    z-index: 2;
+}
+.avatar-sm {
+    flex-shrink: 0;
+}
+@media (max-width: 768px) {
+    .d-flex.justify-content-between.align-items-start.align-items-md-center {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    .btn-group .btn {
+        margin: 1px 0;
+    }
+}
+</style>
+
+<script>
+// Enable tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
 {% endblock %}
