@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Confirm Campaign Send</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ campaign.name }}</h5>
+                    <p class="card-text"><strong>Subject:</strong> {{ campaign.subject }}</p>
+
+                    {% if not is_draft %}
+                        <div class="alert alert-danger" role="alert">
+                            This campaign is not a draft and cannot be sent.
+                        </div>
+                    {% elif not has_segments %}
+                        <div class="alert alert-warning" role="alert">
+                            This campaign has no subscriber segments. <a href="{% url 'campaigns:campaign_edit' campaign.pk %}">Add segments</a>.
+                        </div>
+                    {% elif not has_provider %}
+                        <div class="alert alert-warning" role="alert">
+                            No SMTP provider is configured for this campaign and no default provider is set. <a href="{% url 'campaigns:campaign_edit' campaign.pk %}">Select a provider</a>.
+                        </div>
+                    {% else %}
+                        <p>You are about to send this campaign to all subscribers in the selected segments. This action cannot be undone.</p>
+                        <form method="post" action="{% url 'campaigns:campaign_send' campaign.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">Confirm & Send</button>
+                            <a href="{% url 'campaigns:campaign_list' %}" class="btn btn-secondary">Cancel</a>
+                        </form>
+                    {% endif %}
+
+                    {% if not is_draft or not has_segments or not has_provider %}
+                        <a href="{% url 'campaigns:campaign_list' %}" class="btn btn-secondary mt-3">Back to Campaigns</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

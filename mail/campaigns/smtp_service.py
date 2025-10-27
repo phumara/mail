@@ -7,6 +7,8 @@ from email import encoders
 import time
 from typing import Optional, Dict, Any
 import logging
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 import requests
@@ -106,10 +108,10 @@ class SMTPService:
         if self.provider.username and self.provider.password:
             try:
                 server.login(self.provider.username, self.provider.password)
-            except smtplib.SMTPAuthenticationError:
+            except smtplib.SMTPAuthenticationError as e:
                 return {
                     'success': False,
-                    'message': 'Authentication failed. Check username and password.'
+                    'message': f'Authentication failed: {str(e)}. Check username and password.'
                 }
 
         # Determine the recipient for the test email
@@ -220,17 +222,28 @@ class SMTPService:
                 'message': f'Postmark API error: {response.status_code} - {response.text}'
             }
 
-    def send_email(self, to_email: str, subject: str, html_content: str,
-                   text_content: str = None, attachments: list = None) -> Dict[str, Any]:
+    def send_email(self, to_email: str, subject: str, html_content: str = None,
+                   text_content: str = None, attachments: list = None, 
+                   template_path: str = None, context: dict = None,
+                   from_email: str = None, from_name: str = None) -> Dict[str, Any]:
         """
         Send email using the configured provider
         Returns: Dict with success status and message_id or error
         """
         try:
+            if template_path:
+                html_content = render_to_string(template_path, context)
+                # Optional: Create a text version from HTML
+                text_content = strip_tags(html_content)
+
+            # Determine from_email and from_name
+            final_from_email = from_email or self.provider.from_email
+            final_from_name = from_name or self.provider.from_name
+
             if self.provider.provider_type in ['sendgrid', 'mailgun', 'ses', 'postmark']:
-                return self._send_via_api(to_email, subject, html_content, text_content, attachments)
+                return self._send_via_api(to_email, subject, html_content, text_content, attachments, final_from_email, final_from_name)
             else:
-                return self._send_via_smtp(to_email, subject, html_content, text_content, attachments)
+                return self._send_via_smtp(to_email, subject, html_content, text_content, attachments, final_from_email, final_from_name)
         except Exception as e:
             logger.error(f"Email sending failed for {to_email}: {str(e)}")
             return {
@@ -239,13 +252,14 @@ class SMTPService:
             }
 
     def _send_via_smtp(self, to_email: str, subject: str, html_content: str,
-                       text_content: str = None, attachments: list = None) -> Dict[str, Any]:
+                       text_content: str = None, attachments: list = None,
+                       from_email: str = None, from_name: str = None) -> Dict[str, Any]:
         """Send email via traditional SMTP"""
         try:
             # Create message
             msg = MIMEMultipart('alternative')
             msg['Subject'] = subject
-            msg['From'] = f"{self.provider.from_name} <{self.provider.from_email}>"
+            msg['From'] = f"{from_name} <{from_email}>"
             msg['To'] = to_email
 
             if self.provider.reply_to_email:
@@ -284,7 +298,7 @@ class SMTPService:
 
             # Send the email
             text = msg.as_string()
-            server.sendmail(self.provider.from_email, to_email, text)
+            server.sendmail(from_email, to_email, text)
             server.quit()
 
             # Generate a message ID for tracking
@@ -302,12 +316,13 @@ class SMTPService:
             }
 
     def _send_via_api(self, to_email: str, subject: str, html_content: str,
-                      text_content: str = None, attachments: list = None) -> Dict[str, Any]:
+                      text_content: str = None, attachments: list = None,
+                      from_email: str = None, from_name: str = None) -> Dict[str, Any]:
         """Send email via API-based services"""
         if self.provider.provider_type == 'sendgrid':
-            return self._send_sendgrid_email(to_email, subject, html_content, text_content)
+            return self._send_sendgrid_email(to_email, subject, html_content, text_content, from_email, from_name)
         elif self.provider.provider_type == 'postmark':
-            return self._send_postmark_email(to_email, subject, html_content, text_content)
+            return self._send_postmark_email(to_email, subject, html_content, text_content, from_email, from_name)
         # Add other API providers as needed
         else:
             return {
@@ -316,7 +331,7 @@ class SMTPService:
             }
 
     def _send_sendgrid_email(self, to_email: str, subject: str, html_content: str,
-                             text_content: str = None) -> Dict[str, Any]:
+                             text_content: str = None, from_email: str = None, from_name: str = None) -> Dict[str, Any]:
         """Send email via SendGrid API"""
         url = "https://api.sendgrid.com/v3/mail/send"
         headers = {
@@ -330,8 +345,8 @@ class SMTPService:
                 'subject': subject
             }],
             'from': {
-                'email': self.provider.from_email,
-                'name': self.provider.from_name
+                'email': from_email,
+                'name': from_name
             },
             'content': []
         }
@@ -357,7 +372,7 @@ class SMTPService:
             }
 
     def _send_postmark_email(self, to_email: str, subject: str, html_content: str,
-                             text_content: str = None) -> Dict[str, Any]:
+                             text_content: str = None, from_email: str = None, from_name: str = None) -> Dict[str, Any]:
         """Send email via Postmark API"""
         url = "https://api.postmarkapp.com/email"
         headers = {
@@ -366,7 +381,7 @@ class SMTPService:
         }
 
         data = {
-            'From': f"{self.provider.from_name} <{self.provider.from_email}>",
+            'From': f"{from_name} <{from_email}>",
             'To': to_email,
             'Subject': subject,
             'HtmlBody': html_content,

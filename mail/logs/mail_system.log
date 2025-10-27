@@ -14781,3 +14781,629 @@ INFO 2025-10-27 11:41:10,620 basehttp 40800 6356 "GET /accounts/password-change/
 INFO 2025-10-27 11:41:10,622 basehttp 40800 6356 "GET /accounts/login/?next=/accounts/password-change/done/ HTTP/1.1" 200 4240
 INFO 2025-10-27 11:41:20,070 basehttp 40800 13028 "GET /accounts/profile/ HTTP/1.1" 302 0
 INFO 2025-10-27 11:41:20,072 basehttp 40800 13028 "GET /accounts/login/?next=/accounts/profile/ HTTP/1.1" 200 4227
+INFO 2025-10-27 11:43:24,247 basehttp 40800 25448 "GET /subscribers/segments/ HTTP/1.1" 200 13418
+INFO 2025-10-27 11:43:25,350 basehttp 40800 25448 "GET /subscribers/list/ HTTP/1.1" 200 14160
+INFO 2025-10-27 11:43:26,656 basehttp 40800 25448 "GET /accounts/profile/ HTTP/1.1" 200 20599
+INFO 2025-10-27 11:43:28,088 basehttp 40800 25448 "GET /accounts/users/ HTTP/1.1" 200 21483
+INFO 2025-10-27 11:43:30,588 basehttp 40800 25448 "GET /accounts/users/1/edit/ HTTP/1.1" 200 20548
+INFO 2025-10-27 11:47:40,588 basehttp 40800 25448 "GET / HTTP/1.1" 200 18790
+INFO 2025-10-27 11:47:41,905 basehttp 40800 25448 "GET /subscribers/segments/ HTTP/1.1" 200 13418
+INFO 2025-10-27 11:47:43,863 basehttp 40800 25448 "GET /subscribers/list/ HTTP/1.1" 200 14160
+INFO 2025-10-27 11:47:44,731 basehttp 40800 25448 "GET /campaigns/list/ HTTP/1.1" 200 15517
+INFO 2025-10-27 11:47:45,575 basehttp 40800 25448 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 15361
+INFO 2025-10-27 11:47:47,493 basehttp 40800 25448 "GET /campaigns/smtp-manager/create/ HTTP/1.1" 200 19791
+INFO 2025-10-27 11:47:48,945 basehttp 40800 25448 "GET / HTTP/1.1" 200 18790
+INFO 2025-10-27 12:28:33,661 basehttp 40800 21808 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 15361
+INFO 2025-10-27 12:28:35,938 basehttp 40800 21808 "GET /campaigns/smtp-manager/create/ HTTP/1.1" 200 19791
+INFO 2025-10-27 12:33:03,957 basehttp 40800 14848 "POST /campaigns/smtp-manager/create/ HTTP/1.1" 302 0
+INFO 2025-10-27 12:33:03,966 basehttp 40800 14848 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 17121
+WARNING 2025-10-27 12:33:07,745 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:07,745 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:09,851 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:09,852 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:10,368 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:10,369 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:10,702 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:10,703 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:10,944 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:10,944 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:11,183 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:11,183 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:11,450 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:11,450 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:11,678 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:11,679 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:39,962 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:39,963 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:40,445 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:40,445 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:40,652 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:40,652 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:40,846 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:40,847 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:41,029 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:41,030 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:33:41,251 log 40800 14848 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:33:41,252 basehttp 40800 14848 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+INFO 2025-10-27 12:39:27,864 basehttp 40800 30484 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 19902
+INFO 2025-10-27 12:39:33,940 basehttp 40800 30484 "POST /campaigns/smtp-manager/2/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 12:39:33,948 basehttp 40800 30484 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 17121
+WARNING 2025-10-27 12:39:35,285 log 40800 30484 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:39:35,285 basehttp 40800 30484 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:39:41,318 log 40800 30484 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:39:41,318 basehttp 40800 30484 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:39:41,820 log 40800 30484 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:39:41,820 basehttp 40800 30484 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:39:42,139 log 40800 30484 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:39:42,140 basehttp 40800 30484 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:39:42,332 log 40800 30484 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:39:42,332 basehttp 40800 30484 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:39:42,535 log 40800 30484 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:39:42,536 basehttp 40800 30484 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:39:42,719 log 40800 30484 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:39:42,719 basehttp 40800 30484 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:39:44,334 log 40800 30484 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 12:39:44,335 basehttp 40800 30484 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+WARNING 2025-10-27 12:40:00,320 log 40800 30484 Not Found: /campaigns/smtp-manager/test/2/
+WARNING 2025-10-27 12:40:00,320 basehttp 40800 30484 "POST /campaigns/smtp-manager/test/2/ HTTP/1.1" 404 10265
+WARNING 2025-10-27 12:42:54,044 log 40800 40384 Forbidden (CSRF cookie not set.): /campaigns/test-smtp-connection/2/
+WARNING 2025-10-27 12:42:54,045 basehttp 40800 40384 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 403 2855
+WARNING 2025-10-27 12:44:31,863 log 40800 22492 Forbidden (CSRF cookie not set.): /campaigns/test-smtp-connection/2/
+WARNING 2025-10-27 12:44:31,864 basehttp 40800 22492 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 403 2855
+INFO 2025-10-27 12:46:17,618 basehttp 40800 21776 "GET /accounts/login/ HTTP/1.1" 200 3901
+INFO 2025-10-27 12:46:17,620 basehttp 40800 21776 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 302 0
+INFO 2025-10-27 12:46:17,622 basehttp 40800 21776 "GET /accounts/login/?next=/campaigns/test-smtp-connection/2/ HTTP/1.1" 200 4243
+INFO 2025-10-27 12:46:39,860 basehttp 40800 40180 "GET /campaigns/smtp-manager/ HTTP/1.1" 302 0
+INFO 2025-10-27 12:46:39,862 basehttp 40800 40180 "GET /accounts/login/?next=/campaigns/smtp-manager/ HTTP/1.1" 200 4233
+INFO 2025-10-27 12:46:55,287 autoreload 25912 22700 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 12:46:55,886 autoreload 40800 38476 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 12:46:56,559 autoreload 31832 15228 Watching for file changes with StatReloader
+INFO 2025-10-27 12:46:57,021 autoreload 39460 4340 Watching for file changes with StatReloader
+WARNING 2025-10-27 12:48:23,084 log 31832 32004 Forbidden (CSRF cookie not set.): /campaigns/test-smtp-connection/2/
+WARNING 2025-10-27 12:48:23,084 basehttp 31832 32004 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 403 2855
+INFO 2025-10-27 12:48:34,369 autoreload 31832 15228 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 12:48:34,676 autoreload 39460 4340 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 12:48:35,586 autoreload 18104 1396 Watching for file changes with StatReloader
+INFO 2025-10-27 12:48:35,835 autoreload 38076 31896 Watching for file changes with StatReloader
+INFO 2025-10-27 12:48:38,203 autoreload 38076 31896 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 12:48:39,033 autoreload 18104 1396 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 12:48:39,403 autoreload 32228 20648 Watching for file changes with StatReloader
+INFO 2025-10-27 12:48:40,081 autoreload 13460 39352 Watching for file changes with StatReloader
+WARNING 2025-10-27 12:49:12,017 log 32228 14568 Unauthorized: /campaigns/test-smtp-connection/2/
+WARNING 2025-10-27 12:49:12,018 basehttp 32228 14568 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 401 97
+INFO 2025-10-27 12:49:33,862 basehttp 32228 41768 "GET /accounts/login/ HTTP/1.1" 200 3901
+WARNING 2025-10-27 12:49:33,864 log 32228 41768 Unauthorized: /campaigns/test-smtp-connection/2/
+WARNING 2025-10-27 12:49:33,865 basehttp 32228 41768 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 401 97
+INFO 2025-10-27 12:52:17,698 basehttp 32228 41316 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 17914
+WARNING 2025-10-27 12:52:17,721 log 32228 41316 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 12:52:17,721 basehttp 32228 41316 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 12:52:21,514 basehttp 32228 41316 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 200 288
+INFO 2025-10-27 12:53:13,689 autoreload 32228 20648 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 12:53:13,910 autoreload 13460 39352 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 12:53:15,088 autoreload 29928 24688 Watching for file changes with StatReloader
+INFO 2025-10-27 12:53:15,223 autoreload 2596 4572 Watching for file changes with StatReloader
+INFO 2025-10-27 12:54:56,882 basehttp 29928 31116 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 19894
+WARNING 2025-10-27 12:54:56,907 log 29928 31116 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 12:54:56,908 basehttp 29928 31116 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 12:55:10,150 basehttp 29928 31116 "POST /campaigns/smtp-manager/2/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 12:55:10,192 basehttp 29928 31116 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18619
+WARNING 2025-10-27 12:55:10,218 log 29928 31116 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 12:55:10,219 basehttp 29928 31116 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+WARNING 2025-10-27 12:55:11,687 log 29928 31116 Forbidden (CSRF token from the 'X-Csrftoken' HTTP header has incorrect length.): /campaigns/test-smtp-connection/2/
+WARNING 2025-10-27 12:55:11,687 basehttp 29928 31116 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 403 2549
+INFO 2025-10-27 12:55:16,812 basehttp 29928 31116 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18276
+WARNING 2025-10-27 12:55:16,828 log 29928 31116 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 12:55:16,828 basehttp 29928 31116 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+WARNING 2025-10-27 12:55:18,259 log 29928 31116 Forbidden (CSRF token from the 'X-Csrftoken' HTTP header has incorrect length.): /campaigns/test-smtp-connection/2/
+WARNING 2025-10-27 12:55:18,259 basehttp 29928 31116 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 403 2549
+INFO 2025-10-27 12:55:31,144 basehttp 29928 31116 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 19894
+WARNING 2025-10-27 12:55:31,171 log 29928 31116 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 12:55:31,172 basehttp 29928 31116 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:04:38,560 basehttp 29928 8812 "POST /campaigns/smtp-manager/2/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:04:38,570 basehttp 29928 8812 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18619
+WARNING 2025-10-27 13:04:38,598 log 29928 8812 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:04:38,598 basehttp 29928 8812 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+WARNING 2025-10-27 13:04:40,202 log 29928 8812 Forbidden (CSRF token from the 'X-Csrftoken' HTTP header has incorrect length.): /campaigns/test-smtp-connection/2/
+WARNING 2025-10-27 13:04:40,203 basehttp 29928 8812 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 403 2549
+INFO 2025-10-27 13:04:44,209 basehttp 29928 8812 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18276
+WARNING 2025-10-27 13:04:44,226 log 29928 8812 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:04:44,227 basehttp 29928 8812 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:04:44,737 basehttp 29928 8812 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18276
+WARNING 2025-10-27 13:04:44,754 log 29928 8812 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:04:44,754 basehttp 29928 8812 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:04:44,944 basehttp 29928 8812 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18276
+WARNING 2025-10-27 13:04:44,958 log 29928 8812 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:04:44,959 basehttp 29928 8812 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:04:45,172 basehttp 29928 8812 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18276
+WARNING 2025-10-27 13:04:45,186 log 29928 8812 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:04:45,187 basehttp 29928 8812 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:04:48,030 basehttp 29928 8812 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 19893
+WARNING 2025-10-27 13:04:48,063 log 29928 8812 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:04:48,063 basehttp 29928 8812 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:05:00,438 basehttp 29928 8812 "POST /campaigns/smtp-manager/2/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:05:00,446 basehttp 29928 8812 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18619
+WARNING 2025-10-27 13:05:00,479 log 29928 8812 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:05:00,479 basehttp 29928 8812 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+WARNING 2025-10-27 13:05:01,655 log 29928 8812 Forbidden (CSRF token from the 'X-Csrftoken' HTTP header has incorrect length.): /campaigns/test-smtp-connection/2/
+WARNING 2025-10-27 13:05:01,655 basehttp 29928 8812 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 403 2549
+INFO 2025-10-27 13:05:05,189 basehttp 29928 8812 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18276
+WARNING 2025-10-27 13:05:05,205 log 29928 8812 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:05:05,205 basehttp 29928 8812 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+WARNING 2025-10-27 13:05:06,522 log 29928 8812 Forbidden (CSRF token from the 'X-Csrftoken' HTTP header has incorrect length.): /campaigns/test-smtp-connection/2/
+WARNING 2025-10-27 13:05:06,523 basehttp 29928 8812 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 403 2549
+INFO 2025-10-27 13:09:02,052 autoreload 2596 4572 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:09:02,357 autoreload 29928 24688 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:09:03,462 autoreload 36140 36124 Watching for file changes with StatReloader
+INFO 2025-10-27 13:09:03,706 autoreload 11996 23804 Watching for file changes with StatReloader
+INFO 2025-10-27 13:09:45,979 autoreload 36140 36124 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:09:46,179 autoreload 11996 23804 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:09:47,346 autoreload 31748 22512 Watching for file changes with StatReloader
+INFO 2025-10-27 13:09:47,511 autoreload 29804 27676 Watching for file changes with StatReloader
+INFO 2025-10-27 13:10:13,758 basehttp 31748 29756 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+WARNING 2025-10-27 13:10:13,780 log 31748 29756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:10:13,780 basehttp 31748 29756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:10:14,281 basehttp 31748 29756 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+WARNING 2025-10-27 13:10:14,301 log 31748 29756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:10:14,301 basehttp 31748 29756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:10:14,558 basehttp 31748 29756 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+WARNING 2025-10-27 13:10:14,573 log 31748 29756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:10:14,574 basehttp 31748 29756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:10:14,788 basehttp 31748 29756 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+WARNING 2025-10-27 13:10:14,802 log 31748 29756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:10:14,803 basehttp 31748 29756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:10:18,371 basehttp 31748 29756 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 200 84
+INFO 2025-10-27 13:10:24,192 basehttp 31748 29756 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 19996
+WARNING 2025-10-27 13:10:24,221 log 31748 29756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:10:24,221 basehttp 31748 29756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:11:09,423 basehttp 31748 29756 "POST /campaigns/smtp-manager/2/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:11:09,431 basehttp 31748 29756 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18406
+WARNING 2025-10-27 13:11:09,461 log 31748 29756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 13:11:09,461 basehttp 31748 29756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 13:11:14,617 basehttp 31748 29756 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 200 84
+INFO 2025-10-27 13:11:38,970 basehttp 31748 29756 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 19996
+INFO 2025-10-27 13:11:50,886 basehttp 31748 29756 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 13:11:54,793 basehttp 31748 29756 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 200 84
+INFO 2025-10-27 13:12:58,431 basehttp 31748 29756 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 200 84
+INFO 2025-10-27 13:13:13,578 basehttp 31748 29756 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 19996
+INFO 2025-10-27 13:14:40,424 autoreload 31748 22512 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:14:40,425 autoreload 29804 27676 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:14:41,709 autoreload 24364 19776 Watching for file changes with StatReloader
+INFO 2025-10-27 13:14:41,717 autoreload 17340 18312 Watching for file changes with StatReloader
+INFO 2025-10-27 13:14:59,438 autoreload 17340 18312 C:\Users\Phum\Documents\Project\mail\mail\campaigns\smtp_service.py changed, reloading.
+INFO 2025-10-27 13:14:59,442 autoreload 24364 19776 C:\Users\Phum\Documents\Project\mail\mail\campaigns\smtp_service.py changed, reloading.
+INFO 2025-10-27 13:15:00,563 autoreload 16544 23228 Watching for file changes with StatReloader
+INFO 2025-10-27 13:15:00,564 autoreload 25508 29088 Watching for file changes with StatReloader
+INFO 2025-10-27 13:15:59,418 autoreload 25508 29088 C:\Users\Phum\Documents\Project\mail\mail\campaigns\smtp_service.py changed, reloading.
+INFO 2025-10-27 13:15:59,421 autoreload 16544 23228 C:\Users\Phum\Documents\Project\mail\mail\campaigns\smtp_service.py changed, reloading.
+INFO 2025-10-27 13:16:00,611 autoreload 40212 19772 Watching for file changes with StatReloader
+INFO 2025-10-27 13:16:00,614 autoreload 15440 15836 Watching for file changes with StatReloader
+INFO 2025-10-27 13:16:24,607 basehttp 40212 15444 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 19996
+INFO 2025-10-27 13:16:29,141 basehttp 40212 15444 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 13:16:33,410 basehttp 40212 15444 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13449
+INFO 2025-10-27 13:16:45,709 basehttp 40212 15444 "POST /campaigns/send-test-email/ HTTP/1.1" 200 14300
+INFO 2025-10-27 13:16:55,829 basehttp 40212 15444 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 13:16:59,224 basehttp 40212 15444 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 200 84
+INFO 2025-10-27 13:17:00,578 basehttp 40212 15444 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 19996
+INFO 2025-10-27 13:17:14,740 basehttp 40212 15444 "POST /campaigns/smtp-manager/2/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:17:14,748 basehttp 40212 15444 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18406
+INFO 2025-10-27 13:17:19,062 basehttp 40212 15444 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 200 84
+INFO 2025-10-27 13:18:41,079 autoreload 15440 15836 C:\Users\Phum\Documents\Project\mail\mail\campaigns\smtp_service.py changed, reloading.
+INFO 2025-10-27 13:18:41,390 autoreload 40212 19772 C:\Users\Phum\Documents\Project\mail\mail\campaigns\smtp_service.py changed, reloading.
+INFO 2025-10-27 13:18:42,335 autoreload 40800 32932 Watching for file changes with StatReloader
+INFO 2025-10-27 13:18:42,552 autoreload 26984 28812 Watching for file changes with StatReloader
+INFO 2025-10-27 13:18:54,799 autoreload 13664 9636 Watching for file changes with StatReloader
+INFO 2025-10-27 13:19:11,587 basehttp 13664 40952 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 13:19:12,193 basehttp 13664 40952 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 13:19:12,602 basehttp 13664 40952 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 13:19:12,959 basehttp 13664 40952 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 13:19:16,009 basehttp 13664 40952 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 19996
+INFO 2025-10-27 13:19:27,102 basehttp 13664 40952 "POST /campaigns/smtp-manager/2/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:19:27,112 basehttp 13664 40952 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18406
+INFO 2025-10-27 13:19:31,421 basehttp 13664 40952 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 200 273
+INFO 2025-10-27 13:21:03,192 basehttp 13664 40952 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 19996
+INFO 2025-10-27 13:28:37,692 basehttp 13664 5328 "GET /campaigns/list/ HTTP/1.1" 200 15621
+INFO 2025-10-27 13:28:41,530 basehttp 13664 5328 "GET /campaigns/create/ HTTP/1.1" 200 18349
+INFO 2025-10-27 13:28:56,529 basehttp 13664 5328 "POST /campaigns/create/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:28:56,539 basehttp 13664 5328 "GET /campaigns/list/ HTTP/1.1" 200 20669
+WARNING 2025-10-27 13:29:00,143 log 13664 5328 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:29:00,144 basehttp 13664 5328 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+WARNING 2025-10-27 13:31:00,791 log 13664 35308 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:31:00,791 basehttp 13664 35308 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+WARNING 2025-10-27 13:31:01,567 log 13664 35308 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:31:01,567 basehttp 13664 35308 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+WARNING 2025-10-27 13:31:10,216 log 13664 35308 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:31:10,216 basehttp 13664 35308 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+WARNING 2025-10-27 13:31:10,869 log 13664 35308 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:31:10,869 basehttp 13664 35308 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+WARNING 2025-10-27 13:31:48,769 log 13664 35308 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:31:48,769 basehttp 13664 35308 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+WARNING 2025-10-27 13:31:49,362 log 13664 35308 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:31:49,362 basehttp 13664 35308 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+WARNING 2025-10-27 13:31:49,802 log 13664 35308 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:31:49,803 basehttp 13664 35308 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+INFO 2025-10-27 13:32:16,956 basehttp 13664 35308 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:32:18,590 basehttp 13664 35308 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:32:18,780 basehttp 13664 35308 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:32:18,965 basehttp 13664 35308 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:32:19,139 basehttp 13664 35308 "GET /campaigns/list/ HTTP/1.1" 200 20317
+WARNING 2025-10-27 13:32:21,235 log 13664 35308 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:32:21,235 basehttp 13664 35308 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+WARNING 2025-10-27 13:32:25,200 log 13664 35308 Not Found: /campaigns/campaign_preview/
+WARNING 2025-10-27 13:32:25,201 basehttp 13664 35308 "GET /campaigns/campaign_preview/ HTTP/1.1" 404 10255
+WARNING 2025-10-27 13:32:29,922 log 13664 35308 Not Found: /campaigns/campaign_clone/
+WARNING 2025-10-27 13:32:29,923 basehttp 13664 35308 "GET /campaigns/campaign_clone/ HTTP/1.1" 404 10249
+WARNING 2025-10-27 13:32:32,620 log 13664 35308 Not Found: /campaigns/campaign_edit/
+WARNING 2025-10-27 13:32:32,620 basehttp 13664 35308 "GET /campaigns/campaign_edit/ HTTP/1.1" 404 10246
+WARNING 2025-10-27 13:33:44,130 log 13664 35308 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:33:44,130 basehttp 13664 35308 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+INFO 2025-10-27 13:34:50,916 autoreload 13664 9636 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:34:52,211 autoreload 20808 17244 Watching for file changes with StatReloader
+INFO 2025-10-27 13:35:05,846 autoreload 18140 16324 Watching for file changes with StatReloader
+INFO 2025-10-27 13:37:22,739 autoreload 7888 30252 Watching for file changes with StatReloader
+INFO 2025-10-27 13:37:38,434 autoreload 7888 30252 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:37:39,668 autoreload 3212 40488 Watching for file changes with StatReloader
+INFO 2025-10-27 13:37:45,259 autoreload 3212 40488 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:37:46,620 autoreload 29140 24112 Watching for file changes with StatReloader
+INFO 2025-10-27 13:37:50,035 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:37:50,572 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:37:50,781 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:37:50,979 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+WARNING 2025-10-27 13:38:19,863 log 29140 15948 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:38:19,863 basehttp 29140 15948 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+INFO 2025-10-27 13:38:23,104 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:38:23,538 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:38:23,734 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:38:38,901 autoreload 7056 35400 Watching for file changes with StatReloader
+INFO 2025-10-27 13:38:42,108 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:38:42,511 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:38:42,715 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:38:42,881 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+INFO 2025-10-27 13:38:43,080 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20317
+WARNING 2025-10-27 13:38:44,350 log 29140 15948 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:38:44,350 basehttp 29140 15948 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+WARNING 2025-10-27 13:39:14,549 log 29140 15948 Not Found: /campaigns/campaign_preview/
+WARNING 2025-10-27 13:39:14,550 basehttp 29140 15948 "GET /campaigns/campaign_preview/ HTTP/1.1" 404 10255
+WARNING 2025-10-27 13:39:19,376 log 29140 15948 Not Found: /campaigns/campaign_delete/
+WARNING 2025-10-27 13:39:19,376 basehttp 29140 15948 "GET /campaigns/campaign_delete/ HTTP/1.1" 404 10252
+WARNING 2025-10-27 13:41:07,498 log 29140 9504 Not Found: /favicon.ico
+WARNING 2025-10-27 13:41:07,499 basehttp 29140 9504 "GET /favicon.ico HTTP/1.1" 404 3731
+INFO 2025-10-27 13:41:39,973 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:41:40,368 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:41:40,542 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:41:40,744 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:41:41,967 basehttp 29140 15948 "GET /campaigns/1/send/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:41:41,979 basehttp 29140 15948 "GET /campaigns/1/edit/ HTTP/1.1" 200 16806
+INFO 2025-10-27 13:41:46,459 basehttp 29140 15948 "GET /campaigns/1/send/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:41:46,468 basehttp 29140 15948 "GET /campaigns/1/edit/ HTTP/1.1" 200 16806
+WARNING 2025-10-27 13:41:53,618 log 29140 15948 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:41:53,619 basehttp 29140 15948 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+INFO 2025-10-27 13:42:01,545 basehttp 29140 15948 "GET /campaigns/1/edit/ HTTP/1.1" 200 16443
+WARNING 2025-10-27 13:42:04,030 log 29140 15948 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:42:04,031 basehttp 29140 15948 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+INFO 2025-10-27 13:42:10,821 basehttp 29140 15948 "GET /campaigns/1/preview/ HTTP/1.1" 200 13230
+INFO 2025-10-27 13:44:03,425 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:44:06,424 basehttp 29140 15948 "GET /campaigns/1/send/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:44:06,433 basehttp 29140 15948 "GET /campaigns/1/edit/ HTTP/1.1" 200 16806
+WARNING 2025-10-27 13:44:08,986 log 29140 15948 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:44:08,986 basehttp 29140 15948 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+INFO 2025-10-27 13:47:05,291 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:47:06,892 basehttp 29140 15948 "GET /campaigns/1/send/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:47:06,901 basehttp 29140 15948 "GET /campaigns/1/edit/ HTTP/1.1" 200 16806
+INFO 2025-10-27 13:47:09,339 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:47:09,547 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:47:09,742 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:47:09,911 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:47:10,071 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:47:10,240 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 20283
+INFO 2025-10-27 13:47:17,305 basehttp 29140 15948 "GET /campaigns/1/clone/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:47:17,316 basehttp 29140 15948 "GET /campaigns/2/edit/ HTTP/1.1" 200 16810
+INFO 2025-10-27 13:47:58,637 basehttp 29140 15948 "GET / HTTP/1.1" 200 18894
+INFO 2025-10-27 13:48:00,246 basehttp 29140 15948 "GET /subscribers/segments/ HTTP/1.1" 200 13522
+INFO 2025-10-27 13:48:01,473 basehttp 29140 15948 "GET /subscribers/list/ HTTP/1.1" 200 14264
+INFO 2025-10-27 13:48:02,771 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 23944
+INFO 2025-10-27 13:48:04,805 basehttp 29140 15948 "GET /campaigns/create/ HTTP/1.1" 200 18349
+INFO 2025-10-27 13:48:06,040 basehttp 29140 15948 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13449
+INFO 2025-10-27 13:48:07,429 basehttp 29140 15948 "GET /campaigns/media/ HTTP/1.1" 200 13281
+INFO 2025-10-27 13:48:09,291 basehttp 29140 15948 "GET /campaigns/templates/ HTTP/1.1" 200 14099
+INFO 2025-10-27 13:48:11,704 basehttp 29140 15948 "GET /campaigns/analytics/ HTTP/1.1" 200 17330
+INFO 2025-10-27 13:48:20,554 basehttp 29140 15948 "GET /subscribers/segments/ HTTP/1.1" 200 13522
+INFO 2025-10-27 13:48:22,010 basehttp 29140 15948 "GET / HTTP/1.1" 200 18894
+INFO 2025-10-27 13:48:25,135 basehttp 29140 15948 "GET /subscribers/segments/ HTTP/1.1" 200 13522
+INFO 2025-10-27 13:48:27,056 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 23943
+INFO 2025-10-27 13:48:31,111 basehttp 29140 15948 "GET /campaigns/list/ HTTP/1.1" 200 23943
+INFO 2025-10-27 13:49:01,019 basehttp 29140 15948 "GET /campaigns/2/send/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:49:01,029 basehttp 29140 15948 "GET /campaigns/2/edit/ HTTP/1.1" 200 16822
+WARNING 2025-10-27 13:49:03,669 log 29140 15948 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:49:03,669 basehttp 29140 15948 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+INFO 2025-10-27 13:50:23,355 autoreload 26128 23236 Watching for file changes with StatReloader
+INFO 2025-10-27 13:50:50,668 autoreload 7056 35400 C:\Users\Phum\Documents\Project\mail\mail\campaigns\models.py changed, reloading.
+INFO 2025-10-27 13:50:51,366 autoreload 26128 23236 C:\Users\Phum\Documents\Project\mail\mail\campaigns\models.py changed, reloading.
+INFO 2025-10-27 13:50:51,403 autoreload 29140 24112 C:\Users\Phum\Documents\Project\mail\mail\campaigns\models.py changed, reloading.
+INFO 2025-10-27 13:50:51,832 autoreload 23888 11296 Watching for file changes with StatReloader
+INFO 2025-10-27 13:50:52,507 autoreload 32628 7896 Watching for file changes with StatReloader
+INFO 2025-10-27 13:50:52,551 autoreload 22692 25124 Watching for file changes with StatReloader
+INFO 2025-10-27 13:51:07,501 autoreload 23888 11296 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:51:08,235 autoreload 32628 7896 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:51:08,274 autoreload 22692 25124 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:51:08,709 autoreload 27796 18580 Watching for file changes with StatReloader
+INFO 2025-10-27 13:51:09,444 autoreload 41508 39524 Watching for file changes with StatReloader
+INFO 2025-10-27 13:51:09,467 autoreload 38108 30284 Watching for file changes with StatReloader
+INFO 2025-10-27 13:51:18,498 basehttp 27796 13592 "GET /campaigns/2/edit/ HTTP/1.1" 200 16451
+INFO 2025-10-27 13:51:18,597 basehttp 27796 13592 "GET /campaigns/2/edit/ HTTP/1.1" 200 16451
+INFO 2025-10-27 13:51:18,863 basehttp 27796 13592 "GET /campaigns/2/edit/ HTTP/1.1" 200 16451
+INFO 2025-10-27 13:51:21,034 basehttp 27796 13592 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 13:51:25,449 basehttp 27796 13592 "GET /campaigns/list/ HTTP/1.1" 200 23944
+INFO 2025-10-27 13:51:27,536 basehttp 27796 13592 "GET /campaigns/2/send/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:51:27,544 basehttp 27796 13592 "GET /campaigns/2/edit/ HTTP/1.1" 200 16822
+WARNING 2025-10-27 13:51:29,885 log 27796 13592 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:51:29,886 basehttp 27796 13592 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+INFO 2025-10-27 13:51:34,094 autoreload 27796 18580 C:\Users\Phum\Documents\Project\mail\mail\campaigns\smtp_service.py changed, reloading.
+INFO 2025-10-27 13:51:34,464 autoreload 41508 39524 C:\Users\Phum\Documents\Project\mail\mail\campaigns\smtp_service.py changed, reloading.
+INFO 2025-10-27 13:51:34,490 autoreload 38108 30284 C:\Users\Phum\Documents\Project\mail\mail\campaigns\smtp_service.py changed, reloading.
+INFO 2025-10-27 13:51:35,570 autoreload 29048 1196 Watching for file changes with StatReloader
+INFO 2025-10-27 13:51:35,899 autoreload 25056 19744 Watching for file changes with StatReloader
+INFO 2025-10-27 13:51:35,901 autoreload 29928 40060 Watching for file changes with StatReloader
+WARNING 2025-10-27 13:52:30,232 log 29048 7696 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:52:30,232 basehttp 29048 7696 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+WARNING 2025-10-27 13:52:30,982 log 29048 7696 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:52:30,983 basehttp 29048 7696 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+INFO 2025-10-27 13:52:35,339 autoreload 16448 10436 Watching for file changes with StatReloader
+INFO 2025-10-27 13:52:52,662 basehttp 29048 7696 "GET /campaigns/2/edit/ HTTP/1.1" 200 16451
+INFO 2025-10-27 13:52:59,434 basehttp 29048 7696 "GET /campaigns/create/ HTTP/1.1" 200 18301
+INFO 2025-10-27 13:53:02,576 basehttp 29048 7696 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13449
+INFO 2025-10-27 13:53:07,949 basehttp 29048 7696 "GET /campaigns/list/ HTTP/1.1" 200 23944
+INFO 2025-10-27 13:53:09,421 basehttp 29048 7696 "GET /campaigns/2/edit/ HTTP/1.1" 200 16451
+INFO 2025-10-27 13:53:11,847 basehttp 29048 7696 "GET /subscribers/segments/ HTTP/1.1" 200 13522
+INFO 2025-10-27 13:53:12,924 basehttp 29048 7696 "GET /subscribers/segments/create/ HTTP/1.1" 200 15059
+INFO 2025-10-27 13:53:16,341 basehttp 29048 7696 "POST /subscribers/segments/create/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:53:16,350 basehttp 29048 7696 "GET /subscribers/segments/ HTTP/1.1" 200 14961
+INFO 2025-10-27 13:53:17,979 basehttp 29048 7696 "GET /subscribers/segments/1/subscribers/ HTTP/1.1" 200 17388
+INFO 2025-10-27 13:53:21,634 basehttp 29048 7696 "GET /subscribers/list/ HTTP/1.1" 200 14264
+INFO 2025-10-27 13:53:22,867 basehttp 29048 7696 "GET /subscribers/create/ HTTP/1.1" 200 13869
+INFO 2025-10-27 13:53:32,157 basehttp 29048 7696 "POST /subscribers/create/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:53:32,166 basehttp 29048 7696 "GET /subscribers/list/ HTTP/1.1" 200 14904
+INFO 2025-10-27 13:53:33,560 basehttp 29048 7696 "GET /subscribers/segments/ HTTP/1.1" 200 14627
+INFO 2025-10-27 13:53:34,726 basehttp 29048 7696 "GET /subscribers/segments/1/subscribers/ HTTP/1.1" 200 17388
+INFO 2025-10-27 13:53:37,632 basehttp 29048 7696 "GET /subscribers/search-subscribers/?q=phum&segment_id=1 HTTP/1.1" 200 95
+INFO 2025-10-27 13:53:40,718 basehttp 29048 7696 "POST /subscribers/segments/1/subscribers/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:53:40,726 basehttp 29048 7696 "GET /subscribers/segments/1/subscribers/ HTTP/1.1" 200 18767
+INFO 2025-10-27 13:53:42,693 basehttp 29048 7696 "GET /subscribers/segments/ HTTP/1.1" 200 14627
+INFO 2025-10-27 13:53:44,618 basehttp 29048 7696 "GET /campaigns/list/ HTTP/1.1" 200 23944
+INFO 2025-10-27 13:53:49,533 basehttp 29048 7696 "GET /campaigns/1/edit/ HTTP/1.1" 200 16808
+INFO 2025-10-27 13:53:53,959 autoreload 29928 40060 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:53:53,963 autoreload 25056 19744 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:53:54,749 autoreload 16448 10436 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:53:54,883 autoreload 29048 1196 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:53:55,542 autoreload 21964 20420 Watching for file changes with StatReloader
+INFO 2025-10-27 13:53:55,549 autoreload 22356 39484 Watching for file changes with StatReloader
+WARNING 2025-10-27 13:53:55,849 log 21964 36940 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:53:55,850 basehttp 21964 36940 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+INFO 2025-10-27 13:53:56,222 autoreload 24768 1304 Watching for file changes with StatReloader
+INFO 2025-10-27 13:53:56,368 autoreload 3832 32240 Watching for file changes with StatReloader
+INFO 2025-10-27 13:54:19,440 autoreload 36720 33484 Watching for file changes with StatReloader
+WARNING 2025-10-27 13:54:22,841 log 21964 36940 Not Found: /campaigns/campaign_send/
+WARNING 2025-10-27 13:54:22,842 basehttp 21964 36940 "GET /campaigns/campaign_send/ HTTP/1.1" 404 10246
+INFO 2025-10-27 13:54:25,585 basehttp 21964 36940 "POST /campaigns/1/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:54:25,604 basehttp 21964 36940 "GET /campaigns/list/ HTTP/1.1" 200 24305
+INFO 2025-10-27 13:54:27,253 basehttp 21964 36940 "GET /campaigns/1/send/ HTTP/1.1" 200 13971
+WARNING 2025-10-27 13:54:29,317 views 21964 36940 To: mot.phum@gmail.com, Subject: 1
+INFO 2025-10-27 13:54:32,109 basehttp 21964 36940 "POST /campaigns/1/send/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:54:32,119 basehttp 21964 36940 "GET /campaigns/list/ HTTP/1.1" 200 23991
+INFO 2025-10-27 13:55:14,225 autoreload 22356 39484 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:55:14,399 autoreload 36720 33484 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:55:14,409 autoreload 21964 20420 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:55:14,833 autoreload 24768 1304 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:55:14,909 autoreload 3832 32240 C:\Users\Phum\Documents\Project\mail\mail\campaigns\views.py changed, reloading.
+INFO 2025-10-27 13:55:15,924 autoreload 17144 10540 Watching for file changes with StatReloader
+INFO 2025-10-27 13:55:16,050 autoreload 13344 40684 Watching for file changes with StatReloader
+INFO 2025-10-27 13:55:16,054 autoreload 24316 15940 Watching for file changes with StatReloader
+INFO 2025-10-27 13:55:16,426 autoreload 18444 30260 Watching for file changes with StatReloader
+INFO 2025-10-27 13:55:16,487 autoreload 488 27944 Watching for file changes with StatReloader
+INFO 2025-10-27 13:56:17,423 basehttp 17144 33320 "GET /campaigns/1/preview/ HTTP/1.1" 200 13230
+INFO 2025-10-27 13:56:19,003 basehttp 17144 33320 "GET /campaigns/list/ HTTP/1.1" 200 23639
+INFO 2025-10-27 13:56:26,649 basehttp 17144 33320 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 13:56:32,213 basehttp 17144 33320 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 200 273
+INFO 2025-10-27 13:57:32,754 basehttp 17144 33320 "GET / HTTP/1.1" 200 18894
+INFO 2025-10-27 13:57:35,355 basehttp 17144 33320 "GET /subscribers/segments/ HTTP/1.1" 200 14627
+INFO 2025-10-27 13:57:37,092 basehttp 17144 33320 "GET /subscribers/import/ HTTP/1.1" 200 13764
+INFO 2025-10-27 13:57:38,358 basehttp 17144 33320 "GET /campaigns/list/ HTTP/1.1" 200 23640
+INFO 2025-10-27 13:57:39,768 basehttp 17144 33320 "GET /accounts/profile/ HTTP/1.1" 200 20703
+INFO 2025-10-27 13:57:41,311 basehttp 17144 33320 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 13:58:00,481 basehttp 17144 33320 "GET / HTTP/1.1" 200 18894
+INFO 2025-10-27 13:58:10,711 basehttp 17144 33320 "GET /subscribers/list/ HTTP/1.1" 200 14566
+INFO 2025-10-27 13:58:13,657 basehttp 17144 33320 "GET /campaigns/list/ HTTP/1.1" 200 23640
+INFO 2025-10-27 13:58:18,106 basehttp 17144 33320 "GET /campaigns/1/clone/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:58:18,124 basehttp 17144 33320 "GET /campaigns/3/edit/ HTTP/1.1" 200 17183
+INFO 2025-10-27 13:58:24,097 basehttp 17144 33320 "POST /campaigns/3/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 13:58:24,108 basehttp 17144 33320 "GET /campaigns/list/ HTTP/1.1" 200 27670
+INFO 2025-10-27 14:03:06,087 basehttp 17144 31724 "GET / HTTP/1.1" 200 18894
+INFO 2025-10-27 14:03:06,952 basehttp 17144 31724 "GET /subscribers/segments/ HTTP/1.1" 200 14627
+INFO 2025-10-27 14:03:09,042 basehttp 17144 31724 "GET /subscribers/list/ HTTP/1.1" 200 14566
+INFO 2025-10-27 14:04:01,358 basehttp 17144 31724 "GET /subscribers/segments/ HTTP/1.1" 200 14627
+INFO 2025-10-27 14:04:02,425 basehttp 17144 31724 "GET / HTTP/1.1" 200 18894
+INFO 2025-10-27 14:04:03,204 basehttp 17144 31724 "GET /subscribers/segments/ HTTP/1.1" 200 14627
+INFO 2025-10-27 14:04:04,340 basehttp 17144 31724 "GET /subscribers/segments/1/subscribers/ HTTP/1.1" 200 18154
+INFO 2025-10-27 14:04:18,211 basehttp 17144 31724 "GET /accounts/profile/ HTTP/1.1" 200 20703
+INFO 2025-10-27 14:04:19,950 basehttp 17144 31724 "GET /accounts/users/ HTTP/1.1" 200 21587
+INFO 2025-10-27 14:04:27,747 basehttp 17144 31724 "GET /campaigns/create/ HTTP/1.1" 200 18666
+INFO 2025-10-27 14:04:29,401 basehttp 17144 31724 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13449
+INFO 2025-10-27 14:04:31,138 basehttp 17144 31724 "GET /campaigns/media/ HTTP/1.1" 200 13281
+INFO 2025-10-27 14:04:33,300 basehttp 17144 31724 "GET /campaigns/media/upload/ HTTP/1.1" 200 13423
+INFO 2025-10-27 14:04:41,907 basehttp 17144 31724 "POST /campaigns/media/upload/ HTTP/1.1" 302 0
+INFO 2025-10-27 14:04:41,915 basehttp 17144 31724 "GET /campaigns/media/ HTTP/1.1" 200 13965
+INFO 2025-10-27 14:04:43,800 basehttp 17144 31724 "GET /media/media/photo_2025-09-19_09-54-52.jpg HTTP/1.1" 200 307643
+INFO 2025-10-27 14:04:58,040 basehttp 17144 31724 "GET / HTTP/1.1" 200 18894
+INFO 2025-10-27 14:06:00,520 autoreload 8304 39556 Watching for file changes with StatReloader
+INFO 2025-10-27 14:17:11,773 basehttp 17144 24492 "GET / HTTP/1.1" 200 18894
+INFO 2025-10-27 14:17:14,421 basehttp 17144 24492 "GET /campaigns/create/ HTTP/1.1" 200 18666
+INFO 2025-10-27 14:17:17,641 basehttp 17144 24492 "GET /subscribers/import/ HTTP/1.1" 200 13764
+INFO 2025-10-27 14:17:20,729 basehttp 17144 24492 "GET /subscribers/segments/ HTTP/1.1" 200 14627
+INFO 2025-10-27 14:17:23,391 basehttp 17144 24492 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13449
+INFO 2025-10-27 14:17:27,869 basehttp 17144 24492 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 14:18:30,737 basehttp 17144 24492 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 200 272
+INFO 2025-10-27 15:15:00,704 basehttp 17144 21864 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 15:15:10,273 basehttp 17144 21864 "GET /subscribers/segments/ HTTP/1.1" 200 14627
+INFO 2025-10-27 15:15:10,706 basehttp 17144 21864 "GET / HTTP/1.1" 200 18894
+INFO 2025-10-27 15:15:29,988 basehttp 17144 21864 "GET /subscribers/list/ HTTP/1.1" 200 14566
+INFO 2025-10-27 15:15:32,207 basehttp 17144 21864 "GET /subscribers/import/ HTTP/1.1" 200 13764
+INFO 2025-10-27 15:15:35,225 basehttp 17144 21864 "GET /subscribers/bounces/ HTTP/1.1" 200 13094
+INFO 2025-10-27 15:15:37,164 basehttp 17144 21864 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 15:15:44,009 basehttp 17144 21864 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13449
+INFO 2025-10-27 15:19:02,463 basehttp 17144 21864 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13449
+INFO 2025-10-27 15:19:04,935 basehttp 17144 21864 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18063
+INFO 2025-10-27 15:19:36,113 basehttp 17144 21864 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13449
+INFO 2025-10-27 15:21:14,813 autoreload 37272 25524 Watching for file changes with StatReloader
+INFO 2025-10-27 15:21:25,128 basehttp 17144 21864 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13692
+INFO 2025-10-27 15:21:25,793 basehttp 17144 21864 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13692
+INFO 2025-10-27 15:21:28,350 basehttp 17144 21864 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13692
+INFO 2025-10-27 15:22:27,943 basehttp 17144 21864 "GET /campaigns/analytics/ HTTP/1.1" 200 18053
+INFO 2025-10-27 15:22:38,804 basehttp 17144 21864 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:22:40,138 basehttp 17144 21864 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:22:41,477 basehttp 17144 21864 "GET /subscribers/list/ HTTP/1.1" 200 14809
+INFO 2025-10-27 15:22:43,046 basehttp 17144 21864 "GET /campaigns/list/ HTTP/1.1" 200 27581
+INFO 2025-10-27 15:22:52,125 views 17144 21864 Campaign send view called for pk=2 with method=GET
+INFO 2025-10-27 15:22:52,126 views 17144 21864 Rendering confirmation page for campaign 2
+INFO 2025-10-27 15:22:52,130 basehttp 17144 21864 "GET /campaigns/2/send/ HTTP/1.1" 200 13979
+INFO 2025-10-27 15:22:56,150 basehttp 17144 21864 "GET /campaigns/2/edit/ HTTP/1.1" 200 17059
+INFO 2025-10-27 15:22:59,594 basehttp 17144 21864 "POST /campaigns/2/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:22:59,604 basehttp 17144 21864 "GET /campaigns/list/ HTTP/1.1" 200 27950
+INFO 2025-10-27 15:23:01,224 views 17144 21864 Campaign send view called for pk=2 with method=GET
+INFO 2025-10-27 15:23:01,225 views 17144 21864 Rendering confirmation page for campaign 2
+INFO 2025-10-27 15:23:01,227 basehttp 17144 21864 "GET /campaigns/2/send/ HTTP/1.1" 200 14222
+INFO 2025-10-27 15:23:03,890 views 17144 21864 Campaign send view called for pk=2 with method=POST
+INFO 2025-10-27 15:23:03,891 views 17144 21864 Processing POST request for campaign 2
+INFO 2025-10-27 15:23:03,895 views 17144 21864 Assigned default SMTP provider to campaign 2
+INFO 2025-10-27 15:23:03,899 views 17144 21864 Campaign 2 status set to sending.
+WARNING 2025-10-27 15:23:03,900 views 17144 21864 To: mot.phum@gmail.com, Subject: 1
+ERROR 2025-10-27 15:23:06,140 views 17144 21864 SMTP service failed to send email to mot.phum@gmail.com for campaign 2.
+INFO 2025-10-27 15:23:06,147 views 17144 21864 Campaign 2 sent to 0 recipients.
+INFO 2025-10-27 15:23:06,148 basehttp 17144 21864 "POST /campaigns/2/send/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:23:06,160 basehttp 17144 21864 "GET /campaigns/list/ HTTP/1.1" 200 27636
+WARNING 2025-10-27 15:23:07,846 log 17144 21864 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 15:23:07,846 basehttp 17144 21864 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 15:23:18,562 basehttp 17144 21864 "GET /campaigns/2/delete/ HTTP/1.1" 200 13828
+INFO 2025-10-27 15:23:19,845 basehttp 17144 21864 "POST /campaigns/2/delete/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:23:19,854 basehttp 17144 21864 "GET /campaigns/list/ HTTP/1.1" 200 24270
+INFO 2025-10-27 15:27:14,816 basehttp 17144 21864 "GET /campaigns/list/ HTTP/1.1" 200 23910
+INFO 2025-10-27 15:27:23,521 basehttp 17144 21864 "GET /campaigns/1/edit/ HTTP/1.1" 200 16952
+INFO 2025-10-27 15:27:26,638 basehttp 17144 21864 "GET /campaigns/list/ HTTP/1.1" 200 23910
+INFO 2025-10-27 15:27:27,566 basehttp 17144 21864 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:27:28,155 basehttp 17144 21864 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:27:29,136 basehttp 17144 21864 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:28:39,957 basehttp 17144 21864 "GET /subscribers/segments/1/subscribers/ HTTP/1.1" 200 18397
+INFO 2025-10-27 15:28:41,690 basehttp 17144 21864 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:28:44,566 basehttp 17144 21864 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13692
+INFO 2025-10-27 15:29:16,860 basehttp 17144 21864 "GET /accounts/profile/ HTTP/1.1" 200 20946
+INFO 2025-10-27 15:30:39,039 basehttp 17144 20400 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:30:39,440 basehttp 17144 20400 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:30:42,465 basehttp 17144 20400 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:30:44,474 basehttp 17144 20400 "GET /subscribers/segments/1/subscribers/ HTTP/1.1" 200 18397
+INFO 2025-10-27 15:30:45,993 basehttp 17144 20400 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:30:47,714 basehttp 17144 20400 "GET /subscribers/segments/create/ HTTP/1.1" 200 15302
+INFO 2025-10-27 15:30:48,916 basehttp 17144 20400 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:30:53,384 basehttp 17144 20400 "GET /accounts/profile/ HTTP/1.1" 200 20946
+INFO 2025-10-27 15:30:54,660 basehttp 17144 20400 "GET /accounts/users/ HTTP/1.1" 200 21830
+INFO 2025-10-27 15:31:18,966 basehttp 17144 20400 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:31:20,176 basehttp 17144 20400 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:31:21,568 basehttp 17144 20400 "GET /subscribers/list/ HTTP/1.1" 200 14809
+INFO 2025-10-27 15:31:22,652 basehttp 17144 20400 "GET /campaigns/create/ HTTP/1.1" 200 18909
+INFO 2025-10-27 15:31:23,858 basehttp 17144 20400 "GET /accounts/profile/ HTTP/1.1" 200 20946
+INFO 2025-10-27 15:31:24,948 basehttp 17144 20400 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18306
+INFO 2025-10-27 15:31:35,450 basehttp 17144 20400 "POST /campaigns/test-smtp-connection/2/ HTTP/1.1" 200 273
+WARNING 2025-10-27 15:31:35,568 log 17144 20400 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-10-27 15:31:35,569 basehttp 17144 20400 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3842
+INFO 2025-10-27 15:31:40,979 basehttp 17144 20400 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18306
+INFO 2025-10-27 15:31:47,051 basehttp 17144 20400 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18306
+INFO 2025-10-27 15:32:41,283 basehttp 17144 20400 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:32:45,064 basehttp 17144 20400 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:32:46,695 basehttp 17144 20400 "GET /subscribers/list/ HTTP/1.1" 200 14809
+INFO 2025-10-27 15:32:48,877 basehttp 17144 20400 "GET /campaigns/list/ HTTP/1.1" 200 23910
+INFO 2025-10-27 15:32:50,406 basehttp 17144 20400 "GET /accounts/profile/ HTTP/1.1" 200 20946
+INFO 2025-10-27 15:32:52,377 basehttp 17144 20400 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:32:53,171 basehttp 17144 20400 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:32:55,826 basehttp 17144 20400 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:32:59,200 basehttp 17144 20400 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:33:05,056 basehttp 17144 20400 "GET /subscribers/import/ HTTP/1.1" 200 14007
+INFO 2025-10-27 15:33:06,537 basehttp 17144 20400 "GET /subscribers/list/ HTTP/1.1" 200 14809
+INFO 2025-10-27 15:33:08,306 basehttp 17144 20400 "GET /subscribers/create/ HTTP/1.1" 200 14112
+INFO 2025-10-27 15:33:09,572 basehttp 17144 20400 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:33:13,372 basehttp 17144 20400 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:33:14,971 basehttp 17144 20400 "GET /subscribers/segments/1/subscribers/ HTTP/1.1" 200 18397
+INFO 2025-10-27 15:33:17,909 basehttp 17144 20400 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:33:19,241 basehttp 17144 20400 "GET /subscribers/segments/create/ HTTP/1.1" 200 15302
+INFO 2025-10-27 15:33:20,678 basehttp 17144 20400 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:33:58,980 basehttp 17144 20400 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18306
+INFO 2025-10-27 15:34:02,802 basehttp 17144 20400 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13692
+INFO 2025-10-27 15:34:06,643 basehttp 17144 20400 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18306
+INFO 2025-10-27 15:34:09,533 basehttp 17144 20400 "GET /campaigns/smtp-manager/2/edit/ HTTP/1.1" 200 20239
+INFO 2025-10-27 15:34:16,619 basehttp 17144 20400 "POST /campaigns/smtp-manager/2/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:34:16,629 basehttp 17144 20400 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 18655
+INFO 2025-10-27 15:34:23,532 basehttp 17144 20400 "GET /campaigns/smtp-manager/create/ HTTP/1.1" 200 20138
+INFO 2025-10-27 15:35:31,246 basehttp 17144 20400 "POST /campaigns/smtp-manager/create/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:35:31,255 basehttp 17144 20400 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 20081
+ERROR 2025-10-27 15:35:35,400 smtp_service 17144 20400 Connection test failed for sonkeng: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1028)
+INFO 2025-10-27 15:35:35,401 basehttp 17144 20400 "POST /campaigns/test-smtp-connection/3/ HTTP/1.1" 200 114
+INFO 2025-10-27 15:35:41,598 basehttp 17144 20400 "GET /campaigns/smtp-manager/3/edit/ HTTP/1.1" 200 20239
+INFO 2025-10-27 15:36:01,062 basehttp 17144 20400 "POST /campaigns/smtp-manager/3/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:36:01,070 basehttp 17144 20400 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 20081
+INFO 2025-10-27 15:36:05,038 basehttp 17144 20400 "POST /campaigns/test-smtp-connection/3/ HTTP/1.1" 200 73
+INFO 2025-10-27 15:36:19,434 basehttp 17144 20400 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13692
+INFO 2025-10-27 15:36:22,698 basehttp 17144 20400 "GET /accounts/profile/ HTTP/1.1" 200 20946
+INFO 2025-10-27 15:36:24,353 basehttp 17144 20400 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 19738
+INFO 2025-10-27 15:36:26,941 basehttp 17144 20400 "GET /campaigns/smtp-manager/3/edit/ HTTP/1.1" 200 20231
+INFO 2025-10-27 15:36:37,294 basehttp 17144 20400 "POST /campaigns/smtp-manager/3/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:36:37,304 basehttp 17144 20400 "GET /campaigns/smtp-manager/ HTTP/1.1" 200 20081
+INFO 2025-10-27 15:36:41,116 basehttp 17144 20400 "GET /campaigns/send-test-email/ HTTP/1.1" 200 13691
+INFO 2025-10-27 15:36:50,687 basehttp 17144 20400 "POST /campaigns/send-test-email/ HTTP/1.1" 200 14156
+INFO 2025-10-27 15:37:24,492 basehttp 17144 20400 "GET / HTTP/1.1" 200 19137
+INFO 2025-10-27 15:37:27,473 basehttp 17144 20400 "GET /subscribers/segments/ HTTP/1.1" 200 14870
+INFO 2025-10-27 15:37:29,114 basehttp 17144 20400 "GET /subscribers/segments/1/subscribers/ HTTP/1.1" 200 18397
+INFO 2025-10-27 15:37:33,208 basehttp 17144 20400 "GET /campaigns/templates/ HTTP/1.1" 200 14342
+INFO 2025-10-27 15:37:34,896 basehttp 17144 20400 "GET /campaigns/templates/create/ HTTP/1.1" 200 24701
+INFO 2025-10-27 15:37:59,286 basehttp 17144 20400 "POST /campaigns/templates/create/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:37:59,294 basehttp 17144 20400 "GET /campaigns/templates/ HTTP/1.1" 200 15297
+INFO 2025-10-27 15:38:04,743 basehttp 17144 20400 "GET /subscribers/list/ HTTP/1.1" 200 14809
+INFO 2025-10-27 15:38:08,170 basehttp 17144 20400 "GET /campaigns/list/ HTTP/1.1" 200 23910
+INFO 2025-10-27 15:38:10,633 basehttp 17144 20400 "GET /campaigns/1/edit/ HTTP/1.1" 200 16987
+INFO 2025-10-27 15:39:45,461 basehttp 17144 20400 "POST /campaigns/1/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:39:45,471 basehttp 17144 20400 "GET /campaigns/list/ HTTP/1.1" 200 24280
+INFO 2025-10-27 15:39:50,307 basehttp 17144 20400 "GET /campaigns/1/clone/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:39:50,316 basehttp 17144 20400 "GET /campaigns/4/edit/ HTTP/1.1" 200 17503
+INFO 2025-10-27 15:39:53,538 basehttp 17144 20400 "POST /campaigns/4/edit/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:39:53,548 basehttp 17144 20400 "GET /campaigns/list/ HTTP/1.1" 200 27972
+INFO 2025-10-27 15:39:56,902 views 17144 20400 Campaign send view called for pk=4 with method=GET
+INFO 2025-10-27 15:39:56,904 views 17144 20400 Rendering confirmation page for campaign 4
+INFO 2025-10-27 15:39:56,907 basehttp 17144 20400 "GET /campaigns/4/send/ HTTP/1.1" 200 14236
+INFO 2025-10-27 15:39:58,146 views 17144 20400 Campaign send view called for pk=4 with method=POST
+INFO 2025-10-27 15:39:58,147 views 17144 20400 Processing POST request for campaign 4
+INFO 2025-10-27 15:39:58,151 views 17144 20400 Assigned default SMTP provider to campaign 4
+INFO 2025-10-27 15:39:58,153 views 17144 20400 Campaign 4 status set to sending.
+WARNING 2025-10-27 15:39:58,155 views 17144 20400 To: mot.phum@gmail.com, Subject: looking good
+INFO 2025-10-27 15:39:59,225 views 17144 20400 Campaign 4 sent to 1 recipients.
+INFO 2025-10-27 15:39:59,226 basehttp 17144 20400 "POST /campaigns/4/send/ HTTP/1.1" 302 0
+INFO 2025-10-27 15:39:59,236 basehttp 17144 20400 "GET /campaigns/list/ HTTP/1.1" 200 27658
+INFO 2025-10-27 15:41:54,128 basehttp 17144 20400 "GET /campaigns/4/edit/ HTTP/1.1" 200 17034
+INFO 2025-10-27 15:42:16,738 autoreload 37272 25524 C:\Users\Phum\Documents\Project\mail\mail\mail\settings.py changed, reloading.
+INFO 2025-10-27 15:42:16,742 autoreload 17144 10540 C:\Users\Phum\Documents\Project\mail\mail\mail\settings.py changed, reloading.
+INFO 2025-10-27 15:42:17,597 autoreload 21556 3828 Watching for file changes with StatReloader
+INFO 2025-10-27 15:42:17,626 autoreload 13872 35972 Watching for file changes with StatReloader
+INFO 2025-10-27 15:42:22,853 autoreload 21556 3828 C:\Users\Phum\Documents\Project\mail\mail\mail\settings.py changed, reloading.
+INFO 2025-10-27 15:42:22,881 autoreload 13872 35972 C:\Users\Phum\Documents\Project\mail\mail\mail\settings.py changed, reloading.
+INFO 2025-10-27 15:42:23,909 autoreload 8960 2476 Watching for file changes with StatReloader
+INFO 2025-10-27 15:42:23,913 autoreload 22932 37668 Watching for file changes with StatReloader
+INFO 2025-10-27 15:42:33,486 autoreload 22932 37668 C:\Users\Phum\Documents\Project\mail\mail\mail\urls.py changed, reloading.
+INFO 2025-10-27 15:42:33,488 autoreload 8960 2476 C:\Users\Phum\Documents\Project\mail\mail\mail\urls.py changed, reloading.
+INFO 2025-10-27 15:42:34,905 autoreload 3972 24592 Watching for file changes with StatReloader
+INFO 2025-10-27 15:42:34,905 autoreload 21460 23000 Watching for file changes with StatReloader
+INFO 2025-10-27 15:42:42,589 autoreload 3972 24592 C:\Users\Phum\Documents\Project\mail\mail\campaigns\models.py changed, reloading.
+INFO 2025-10-27 15:42:42,593 autoreload 21460 23000 C:\Users\Phum\Documents\Project\mail\mail\campaigns\models.py changed, reloading.
+INFO 2025-10-27 15:42:43,922 autoreload 22948 3728 Watching for file changes with StatReloader
+INFO 2025-10-27 15:42:43,931 autoreload 13364 4920 Watching for file changes with StatReloader
+INFO 2025-10-27 15:42:48,520 autoreload 13364 4920 C:\Users\Phum\Documents\Project\mail\mail\campaigns\models.py changed, reloading.
+INFO 2025-10-27 15:42:48,520 autoreload 22948 3728 C:\Users\Phum\Documents\Project\mail\mail\campaigns\models.py changed, reloading.
+INFO 2025-10-27 15:42:49,863 autoreload 22112 13372 Watching for file changes with StatReloader
+INFO 2025-10-27 15:42:49,864 autoreload 26020 38212 Watching for file changes with StatReloader
+INFO 2025-10-27 15:42:53,426 autoreload 22112 13372 C:\Users\Phum\Documents\Project\mail\mail\campaigns\models.py changed, reloading.
+INFO 2025-10-27 15:42:54,465 autoreload 26020 38212 C:\Users\Phum\Documents\Project\mail\mail\campaigns\models.py changed, reloading.
+INFO 2025-10-27 15:42:54,774 autoreload 20320 40796 Watching for file changes with StatReloader
+INFO 2025-10-27 15:42:55,602 autoreload 16764 33500 Watching for file changes with StatReloader

@@ -62,6 +62,12 @@
 </div>
 
 <script>
+    // Function to get CSRF token from meta tag
+    function getCSRFToken() {
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        return csrfMeta ? csrfMeta.getAttribute('content') : null;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.test-connection-btn').forEach(button => {
             button.addEventListener('click', function() {
@@ -69,14 +75,33 @@
                 const testResultSpan = document.getElementById(`test-result-${providerId}`);
                 testResultSpan.innerHTML = '<span class="text-warning">Testing...</span>';
 
-                fetch(`/campaigns/smtp-manager/test/${providerId}/`, {
+                const csrftoken = getCSRFToken();
+                console.log('CSRF Token:', csrftoken);
+                console.log('User authenticated:', '{{ user.is_authenticated }}');
+
+                fetch(`/campaigns/test-smtp-connection/${providerId}/`, {
                     method: 'POST',
                     headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
+                        'X-CSRFToken': csrftoken,
                         'Content-Type': 'application/json'
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (response.status === 403) {
+                        // Handle CSRF or authentication errors
+                        return response.json().then(data => {
+                            throw new Error(data.message || 'Authentication failed. Please refresh the page and try again.');
+                        }).catch(() => {
+                            throw new Error('Authentication failed. Please refresh the page and try again.');
+                        });
+                    }
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}\nResponse: ${text}`);
+                        });
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         testResultSpan.innerHTML = `<span class="text-success">${data.message}</span>`;
@@ -86,7 +111,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    testResultSpan.innerHTML = '<span class="text-danger">Error during test.</span>';
+                    testResultSpan.innerHTML = '<span class="text-danger">Error during test: ' + error.message + '</span>';
                 });
             });
         });

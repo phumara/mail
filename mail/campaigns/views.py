@@ -4,10 +4,12 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 from .models import SMTPProvider, Campaign, EmailLog, EmailTemplate
 from .forms import CampaignForm, TemplateForm, SMTPProviderForm
 from .smtp_service import SMTPService, SMTPManager
 from subscribers.models import Subscriber
+import logging
 import json
 import traceback
 from django.shortcuts import render, redirect, get_object_or_404
@@ -87,6 +89,13 @@ def smtp_provider_delete(request, pk):
 @require_POST
 def test_smtp_connection(request, provider_id):
     """AJAX view to test SMTP connection"""
+    # Check authentication first
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'success': False,
+            'message': 'Authentication required. Please log in to test SMTP connections.'
+        }, status=401)
+    
     try:
         provider = get_object_or_404(SMTPProvider, id=provider_id)
         
@@ -129,8 +138,7 @@ def send_test_email(request):
                 result = service.send_email(
                     to_email=to_email,
                     subject='Test Email',
-                    html_content='<p>This is a test email from your mail system.</p>',
-                    text_content='This is a test email from your mail system.'
+                    template_path='campaigns/test_email.html'  # Use the new template
                 )
         
                 if result['success']:
@@ -324,93 +332,118 @@ def campaign_clone(request, pk):
     return redirect('campaigns:campaign_edit', pk=new_campaign.pk)
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 @login_required
 def campaign_send(request, pk):
+    logger.info(f'Campaign send view called for pk={pk} with method={request.method}')
     """Send a campaign to selected segments"""
     campaign = get_object_or_404(Campaign, pk=pk)
 
-    if campaign.status != 'draft':
-        messages.error(request, f'Campaign "{campaign.name}" cannot be sent as it is not in draft status.')
-        return redirect('campaigns:campaign_list')
+    if request.method == 'POST':
+        logger.info(f'Processing POST request for campaign {pk}')
+        if campaign.status != 'draft':
+            logger.warning(f'Campaign {pk} is not in draft status.')
+            messages.error(request, f'Campaign "{campaign.name}" cannot be sent as it is not in draft status.')
+            return redirect('campaigns:campaign_list')
 
-    if not campaign.subscriber_segments.exists():
-        messages.error(request, f'Campaign "{campaign.name}" has no target segments selected.')
-        return redirect('campaigns:campaign_edit', pk=campaign.pk)
-
-    if not campaign.smtp_provider:
-        default_provider = SMTPProvider.objects.filter(is_default=True, is_active=True).first()
-        if default_provider:
-            campaign.smtp_provider = default_provider
-            campaign.save() # Save the campaign with the default provider
-        else:
-            messages.error(request, f'Campaign "{campaign.name}" has no SMTP provider selected and no default active provider is set.')
+        if not campaign.subscriber_segments.exists():
+            logger.warning(f'Campaign {pk} has no subscriber segments.')
+            messages.error(request, f'Campaign "{campaign.name}" has no target segments selected.')
             return redirect('campaigns:campaign_edit', pk=campaign.pk)
 
-    # Update campaign status to sending
-    campaign.status = 'sending'
-    campaign.save()
-
-    total_sent_count = 0
-    smtp_service = SMTPService(campaign.smtp_provider)
-
-    # Get all unique subscribers from the selected segments
-    subscribers_to_send = Subscriber.objects.filter(segments__in=campaign.subscriber_segments.all()).distinct()
-
-    for subscriber in subscribers_to_send:
-        try:
-            # Replace placeholders in subject and content
-            subject = campaign.subject.replace('{subscriber.name}', subscriber.name or '').replace('{subscriber.email}', subscriber.email)
-            html_content = campaign.html_content.replace('{subscriber.name}', subscriber.name or '').replace('{subscriber.email}', subscriber.email)
-            text_content = campaign.text_content.replace('{subscriber.name}', subscriber.name or '').replace('{subscriber.email}', subscriber.email)
-
-            success = smtp_service.send_email(
-                to_email=subscriber.email,
-                subject=subject,
-                html_content=html_content,
-                text_content=text_content,
-            )
-
-            if success:
-                total_sent_count += 1
-                EmailLog.objects.create(
-                    campaign=campaign,
-                    subscriber_email=subscriber.email,
-                    smtp_provider=campaign.smtp_provider,
-                    subject=subject,
-                    status='sent',
-                    sent_at=timezone.now()
-                )
+        if not campaign.smtp_provider:
+            default_provider = SMTPProvider.objects.filter(is_default=True, is_active=True).first()
+            if default_provider:
+                campaign.smtp_provider = default_provider
+                campaign.save()
+                logger.info(f'Assigned default SMTP provider to campaign {pk}')
             else:
+                logger.error(f'No SMTP provider for campaign {pk} and no default is set.')
+                messages.error(request, f'Campaign "{campaign.name}" has no SMTP provider selected and no default active provider is set.')
+                return redirect('campaigns:campaign_edit', pk=campaign.pk)
+
+        campaign.status = 'sending'
+        campaign.save()
+        logger.info(f'Campaign {pk} status set to sending.')
+
+        total_sent_count = 0
+        smtp_service = SMTPService(campaign.smtp_provider)
+        subscribers_to_send = Subscriber.objects.filter(segments__in=campaign.subscriber_segments.all()).distinct()
+
+        for subscriber in subscribers_to_send:
+            try:
+                subject = campaign.subject.replace('{subscriber.name}', subscriber.name or '').replace('{subscriber.email}', subscriber.email)
+                html_content = campaign.html_content.replace('{subscriber.name}', subscriber.name or '').replace('{subscriber.email}', subscriber.email)
+                text_content = campaign.text_content.replace('{subscriber.name}', subscriber.name or '').replace('{subscriber.email}', subscriber.email)
+                from_email = campaign.from_email or campaign.smtp_provider.from_email
+                from_name = campaign.from_name or campaign.smtp_provider.from_name
+
+                logging.warning(f'To: {subscriber.email}, Subject: {subject}')
+
+                result = smtp_service.send_email(
+                    to_email=subscriber.email,
+                    subject=subject,
+                    html_content=html_content,
+                    text_content=text_content,
+                    from_email=from_email,
+                    from_name=from_name
+                )
+
+                if result['success']:
+                    total_sent_count += 1
+                    EmailLog.objects.create(
+                        campaign=campaign,
+                        subscriber_email=subscriber.email,
+                        smtp_provider=campaign.smtp_provider,
+                        subject=subject,
+                        status='sent',
+                        sent_at=timezone.now()
+                    )
+                else:
+                    logger.error(f'SMTP service failed to send email to {subscriber.email} for campaign {pk}.')
+                    EmailLog.objects.create(
+                        campaign=campaign,
+                        subscriber_email=subscriber.email,
+                        smtp_provider=campaign.smtp_provider,
+                        subject=subject,
+                        status='failed',
+                        error_message='SMTP service failed to send email.',
+                        sent_at=timezone.now()
+                    )
+            except Exception as e:
+                logger.exception(f'Error sending email to {subscriber.email} for campaign {pk}.')
                 EmailLog.objects.create(
                     campaign=campaign,
                     subscriber_email=subscriber.email,
                     smtp_provider=campaign.smtp_provider,
-                    subject=subject,
+                    subject=campaign.subject,
                     status='failed',
-                    error_message='SMTP service failed to send email.',
+                    error_message=f'Error sending email: {str(e)}',
                     sent_at=timezone.now()
                 )
-        except Exception as e:
-            EmailLog.objects.create(
-                campaign=campaign,
-                subscriber_email=subscriber.email,
-                smtp_provider=campaign.smtp_provider,
-                subject=campaign.subject,
-                status='failed',
-                error_message=f'Error sending email: {str(e)}',
-                sent_at=timezone.now()
-            )
-            messages.error(request, f'Error sending email to {subscriber.email}: {str(e)}')
+                messages.error(request, f'Error sending email to {subscriber.email}: {str(e)}')
 
-    # Update campaign status and sent count after sending attempts
-    campaign.total_recipients = subscribers_to_send.count()
-    campaign.total_sent = total_sent_count
-    campaign.status = 'sent'
-    campaign.sent_at = timezone.now()
-    campaign.save()
+        campaign.total_recipients = subscribers_to_send.count()
+        campaign.total_sent = total_sent_count
+        campaign.status = 'sent'
+        campaign.sent_at = timezone.now()
+        campaign.save()
+        logger.info(f'Campaign {pk} sent to {total_sent_count} recipients.')
 
-    messages.success(request, f'Campaign "{campaign.name}" sent to {total_sent_count} recipients.')
-    return redirect('campaigns:campaign_list')
+        messages.success(request, f'Campaign "{campaign.name}" sent to {total_sent_count} recipients.')
+        return redirect('campaigns:campaign_list')
+
+    logger.info(f'Rendering confirmation page for campaign {pk}')
+    context = {
+        'campaign': campaign,
+        'is_draft': campaign.status == 'draft',
+        'has_segments': campaign.subscriber_segments.exists(),
+        'has_provider': campaign.smtp_provider is not None or SMTPProvider.objects.filter(is_default=True, is_active=True).exists()
+    }
+    return render(request, 'campaigns/campaign_send_confirm.html', context)
 
 
 @login_required

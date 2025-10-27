@@ -99,20 +99,20 @@
                                 <td class="text-center pe-4">
                                     <div class="btn-group" role="group">
                                         {% if campaign.status == 'draft' %}
-                                            <a href="/campaigns/campaign_send/" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Send Campaign">
+                                            <a href="{% url 'campaigns:campaign_send' campaign.pk %}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Send Campaign">
                                                 <i class="bi bi-send"></i>
                                             </a>
                                         {% endif %}
-                                        <a href="/campaigns/campaign_preview/" class="btn btn-sm btn-outline-info" data-bs-toggle="tooltip" title="Preview">
+                                        <a href="{% url 'campaigns:campaign_preview' campaign.pk %}" class="btn btn-sm btn-outline-info" data-bs-toggle="tooltip" title="Preview">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="/campaigns/campaign_clone/" class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip" title="Clone">
+                                        <a href="{% url 'campaigns:campaign_clone' campaign.pk %}" class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip" title="Clone">
                                             <i class="bi bi-copy"></i>
                                         </a>
-                                        <a href="/campaigns/campaign_edit/" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Edit">
+                                        <a href="{% url 'campaigns:campaign_edit' campaign.pk %}" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a href="/campaigns/campaign_delete/" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete">
+                                        <a href="{% url 'campaigns:campaign_delete' campaign.pk %}" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete">
                                             <i class="bi bi-trash"></i>
                                         </a>
                                     </div>
