@@ -250,6 +250,11 @@ CACHES = {
 
 
 
+# Override authentication URLs for production with /mail/ prefix
+LOGIN_URL = '/mail/accounts/login/'
+LOGIN_REDIRECT_URL = '/mail/'
+LOGOUT_REDIRECT_URL = '/mail/accounts/login/'
+
 # Create necessary directories
 os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)
 os.makedirs(os.path.join(BASE_DIR, 'media'), exist_ok=True)
