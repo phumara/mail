@@ -96,7 +96,7 @@ class TemplateForm(forms.ModelForm):
         }
 
 class SMTPProviderForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=False)
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Leave blank to keep current password'}), required=False)
 
     class Meta:
         model = SMTPProvider
@@ -129,9 +129,17 @@ class SMTPProviderForm(forms.ModelForm):
             'is_default': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # If editing an existing provider, make password field optional and add help text
+        if self.instance and self.instance.pk:
+            self.fields['password'].help_text = 'Leave blank to keep the current password'
+            self.fields['password'].required = False
+
     def save(self, commit=True):
         provider = super().save(commit=False)
-        if self.cleaned_data['password']:
+        # Only update password if a new one was provided
+        if self.cleaned_data.get('password'):
             provider.password = self.cleaned_data['password']
         if commit:
             provider.save()
