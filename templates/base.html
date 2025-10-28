@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Quill Editor CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet">
     <style>
         :root {
             --primary-color: #6366f1;
@@ -291,6 +293,8 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Quill Editor JS -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const currentLocation = window.location.pathname;
@@ -317,6 +321,72 @@
                     }
                 }
             });
+
+            // Initialize Quill editor if element exists
+            const quillElement = document.getElementById('quill-editor');
+            if (quillElement) {
+                const quill = new Quill('#quill-editor', {
+                    theme: 'snow',
+                    placeholder: 'Compose your email content...',
+                    modules: {
+                        toolbar: [
+                            [{ 'header': [1, 2, 3, false] }],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            [{ 'color': [] }, { 'background': [] }],
+                            ['link'],
+                            ['clean']
+                        ]
+                    }
+                });
+
+                // Sync Quill content with hidden textarea
+                quill.on('text-change', function() {
+                    const hiddenTextarea = document.querySelector('textarea[name="html_content"]');
+                    if (hiddenTextarea) {
+                        hiddenTextarea.value = quill.root.innerHTML;
+                    }
+                });
+
+                // Set initial content if exists
+                const initialContent = quillElement.value || quillElement.textContent;
+                if (initialContent) {
+                    quill.root.innerHTML = initialContent;
+                }
+            }
+
+            // Initialize Quill editor for container if exists
+            const quillContainer = document.getElementById('quill-editor-container');
+            if (quillContainer) {
+                const textarea = quillContainer.querySelector('textarea');
+                if (textarea) {
+                    const quill = new Quill(quillContainer, {
+                        theme: 'snow',
+                        placeholder: 'Compose your email content...',
+                        modules: {
+                            toolbar: [
+                                [{ 'header': [1, 2, 3, false] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                [{ 'color': [] }, { 'background': [] }],
+                                ['link'],
+                                ['clean']
+                            ]
+                        }
+                    });
+
+                    // Sync Quill content with textarea
+                    quill.on('text-change', function() {
+                        textarea.value = quill.root.innerHTML;
+                    });
+
+                    // Set initial content if exists
+                    const initialContent = textarea.value || textarea.textContent;
+                    if (initialContent) {
+                        quill.root.innerHTML = initialContent;
+                    }
+                }
+            }
         });
     </script>
 </body>

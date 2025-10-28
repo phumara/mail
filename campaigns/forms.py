@@ -56,7 +56,7 @@ class CampaignForm(forms.ModelForm):
         self.fields['cc_recipients'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Comma-separated emails for CC'})
         self.fields['bcc_recipients'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Comma-separated emails for BCC'})
         self.fields['template'].widget.attrs.update({'class': 'form-control'})
-        self.fields['html_content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'HTML email content', 'rows': 10})
+        self.fields['html_content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'HTML email content', 'rows': 10, 'id': 'quill-editor'})
         self.fields['text_content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Plain text email content (optional)', 'rows': 5})
 
 
@@ -87,7 +87,7 @@ class TemplateForm(forms.ModelForm):
 
             'subject': forms.TextInput(attrs={'placeholder': 'Email Subject'}),
 
-            'html_content': forms.Textarea(attrs={'placeholder': 'HTML Email Content', 'rows': 10}),
+            'html_content': forms.Textarea(attrs={'placeholder': 'HTML Email Content', 'rows': 10, 'id': 'quill-editor'}),
 
             'text_content': forms.Textarea(attrs={'placeholder': 'Plain Text Email Content (optional)', 'rows': 5}),
 

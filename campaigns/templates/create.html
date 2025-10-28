@@ -154,11 +154,13 @@
 
                 <div class="mb-3">
 
-                    <label for="id_content">Content</label>
+                    <label for="id_html_content">Content</label>
 
-                    {{ form.content }}
+                    <div id="quill-editor-container">
+                        {{ form.html_content }}
+                    </div>
 
-                    <div class="form-text">Email content in HTML or plain text.</div>
+                    <div class="form-text">Email content in HTML format.</div>
 
                 </div>
 
