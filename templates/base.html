@@ -210,19 +210,19 @@
             <h4 class="text-white mb-4">Mail</h4>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="/"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+                    <a class="nav-link" href="{% url 'home' %}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/subscribers/segments/"><i class="bi bi-list-ul me-2"></i> Lists</a>
+                    <a class="nav-link" href="{% url 'subscribers:segment_list' %}"><i class="bi bi-list-ul me-2"></i> Lists</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="subscribersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-people me-2"></i> Subscribers
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="subscribersDropdown">
-                        <li><a class="dropdown-item" href="/subscribers/list/">All subscribers</a></li>
-                        <li><a class="dropdown-item" href="/subscribers/import/">Import</a></li>
-                        <li><a class="dropdown-item" href="/subscribers/bounces/">Bounces</a></li>
+                        <li><a class="dropdown-item" href="{% url 'subscribers:subscriber_list' %}">All subscribers</a></li>
+                        <li><a class="dropdown-item" href="{% url 'subscribers:subscriber_import' %}">Import</a></li>
+                        <li><a class="dropdown-item" href="{% url 'subscribers:subscriber_bounces' %}">Bounces</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -230,21 +230,11 @@
                         <i class="bi bi-envelope me-2"></i> Campaigns
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="campaignsDropdown">
-                        <li><a class="dropdown-item" href="/campaigns/list/">All campaigns</a></li>
-                        <li><a class="dropdown-item" href="/campaigns/create/">Create new</a></li>
-                        <li><a class="dropdown-item" href="/campaigns/media/">Media</a></li>
-                        <li><a class="dropdown-item" href="/campaigns/templates/">Templates</a></li>
-                        <li class="nav-item">
-                             <div class="collapse" id="collapseCampaigns">
-                                 <ul class="nav-second-level">
-                                     <li><a href="{% url 'campaigns:campaign_list' %}">All Campaigns</a></li>
-                                     <li><a href="{% url 'campaigns:campaign_create' %}">Create new</a></li>
-                                     <li><a href="{% url 'campaigns:media_list' %}">Media</a></li>
-                                     <li><a href="{% url 'campaigns:campaign_analytics' %}">Analytics</a></li>
-                                 </ul>
-                             </div>
-                         </li>
-                        <li><a class="dropdown-item" href="/campaigns/analytics/">Analytics</a></li>
+                        <li><a class="dropdown-item" href="{% url 'campaigns:campaign_list' %}">All campaigns</a></li>
+                        <li><a class="dropdown-item" href="{% url 'campaigns:campaign_create' %}">Create new</a></li>
+                        <li><a class="dropdown-item" href="{% url 'campaigns:media_list' %}">Media</a></li>
+                        <li><a class="dropdown-item" href="{% url 'campaigns:template_list' %}">Templates</a></li>
+                        <li><a class="dropdown-item" href="{% url 'campaigns:campaign_analytics' %}">Analytics</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -263,7 +253,7 @@
                         <i class="bi bi-gear me-2"></i> Settings
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
-                        <li><a class="dropdown-item" href="/campaigns/smtp-manager/">SMTP Manager</a></li>
+                        <li><a class="dropdown-item" href="{% url 'campaigns:smtp_manager' %}">SMTP Manager</a></li>
                         <li><a class="dropdown-item" href="{% url 'campaigns:send_test_email' %}">Send Test Email</a></li>
                     </ul>
                 </li>

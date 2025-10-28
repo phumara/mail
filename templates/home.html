@@ -114,19 +114,19 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-3">
-                        <a href="/campaigns/create/" class="btn btn-primary">
+                        <a href="{% url 'campaigns:campaign_create' %}" class="btn btn-primary">
                             <i class="bi bi-plus-circle me-2"></i>
                             Create Campaign
                         </a>
-                        <a href="/subscribers/import/" class="btn btn-outline-primary">
+                        <a href="{% url 'subscribers:subscriber_import' %}" class="btn btn-outline-primary">
                             <i class="bi bi-upload me-2"></i>
                             Import Subscribers
                         </a>
-                        <a href="/subscribers/segments/" class="btn btn-outline-secondary">
+                        <a href="{% url 'subscribers:segment_list' %}" class="btn btn-outline-secondary">
                             <i class="bi bi-list-check me-2"></i>
                             Manage Lists
                         </a>
-                        <a href="/campaigns/send-test-email/" class="btn btn-outline-info">
+                        <a href="{% url 'campaigns:send_test_email' %}" class="btn btn-outline-info">
                             <i class="bi bi-send me-2"></i>
                             Send Test Email
                         </a>
