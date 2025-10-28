@@ -1,49 +1,23 @@
 from .settings import *
-
+from decouple import config
 import os
-
 import dj_database_url
 
-from dotenv import load_dotenv
-
-
-
-load_dotenv()
-
-
-
-SECRET_KEY = os.environ.get('SECRET_KEY')
-
-if not SECRET_KEY:
-
-    raise ValueError("No SECRET_KEY set in .env or environment!")
-
-
+SECRET_KEY = config('SECRET_KEY')
 
 # Production settings
-
-DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "yes")
-
-
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 # Allowed hosts from environment variable
-
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
 
 # Database configuration using DATABASE_URL
-
 DATABASES = {
-
     'default': dj_database_url.config(
-
-        default=os.environ.get('DATABASE_URL'),
-
+        default=config('DATABASE_URL'),
         conn_max_age=600,
-
         conn_health_checks=True,
-
     )
-
 }
 
 
