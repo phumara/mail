@@ -185,41 +185,86 @@ mail/
 3. **Templates**: Add to app's `templates/` directory
 4. **URLs**: Update app's `urls.py`
 
-### Celery Tasks
-
-Background tasks are automatically discovered. Add new tasks to app's `tasks.py`:
-
-```python
-from celery import shared_task
-
-@shared_task
-def my_background_task():
-    # Task logic here
-    pass
-```
-
 ## 🚀 Deployment
 
-### Production Checklist
+### Option 1: Docker (Recommended)
 
-- [ ] Set `DEBUG = False`
-- [ ] Configure `SECRET_KEY`
-- [ ] Set up PostgreSQL database
-- [ ] Configure Redis for caching
-- [ ] Set up email provider
-- [ ] Configure domain and SSL
-- [ ] Set up monitoring and logging
-- [ ] Configure backups
+Deploying with Docker is the recommended approach for a consistent and scalable production environment.
 
-### Docker Production
+1.  **Prerequisites**:
+    *   Docker and Docker Compose installed on your server.
+    *   A production-ready server (e.g., Ubuntu 22.04).
 
-```bash
-# Build production image
-docker-compose -f docker-compose.yml build
+2.  **Configuration**:
+    *   Copy `docker-compose.yml` and your application code to the server.
+    *   Create a `.env` file with your production settings (refer to the Configuration section).
+    *   Ensure your `ALLOWED_HOSTS` in `.env` is set to your domain.
 
-# Run with production settings
-docker-compose up -d
-```
+3.  **Build and Run**:
+
+    ```bash
+    # Build and start the containers in detached mode
+    docker-compose up --build -d
+    ```
+
+4.  **Initial Setup**:
+
+    ```bash
+    # Run database migrations
+    docker-compose exec web python manage.py migrate
+
+    # Create a superuser
+    docker-compose exec web python manage.py createsuperuser
+
+    # Collect static files
+    docker-compose exec web python manage.py collectstatic --no-input
+    ```
+
+5.  **Web Server (Nginx)**:
+
+    It is highly recommended to use a reverse proxy like Nginx to handle incoming traffic, serve static files, and manage SSL.
+
+    *   Install Nginx on your host machine.
+    *   Configure a new server block for your domain that proxies requests to the Django application running on `http://127.0.0.1:8000`.
+    *   Set up SSL with Let's Encrypt for HTTPS.
+
+### Option 2: Traditional Server Setup
+
+If you prefer not to use Docker, you can set up the application on a traditional server using Gunicorn and Nginx.
+
+1.  **Prerequisites**:
+    *   A production server (e.g., Ubuntu 22.04).
+    *   Python 3.10+ and Pip installed.
+    *   A database server (e.g., PostgreSQL).
+
+2.  **Setup**:
+    *   Clone the repository to your server.
+    *   Create a Python virtual environment and install dependencies from `requirements.txt`.
+    *   Configure your `.env` file with production settings.
+
+3.  **Gunicorn**:
+
+    Install Gunicorn and run it as a systemd service to manage the application process.
+
+    *   Create a systemd service file for Gunicorn (e.g., `/etc/systemd/system/gunicorn.service`).
+    *   Configure the service to run Gunicorn, pointing to your application's WSGI entry point (`mail.wsgi:application`).
+    *   Enable and start the Gunicorn service.
+
+4.  **Nginx**:
+
+    *   Install and configure Nginx as a reverse proxy to forward requests to Gunicorn.
+    *   Configure Nginx to serve static and media files directly for better performance.
+    *   Set up SSL with Let's Encrypt.
+
+5.  **Celery**:
+
+    *   Run Celery workers as a systemd service to process background tasks.
+    *   Configure a Celery Beat service to handle scheduled tasks.
+
+---
+
+
+
 
 ## 🔍 Monitoring
 
