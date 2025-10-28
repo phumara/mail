@@ -32,7 +32,6 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("subscribers/", include("subscribers.urls")),
     path("campaigns/", include("campaigns.urls")),
-    path("ckeditor/", include("ckeditor_uploader.urls")),
 ]
 
 if settings.DEBUG:

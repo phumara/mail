@@ -52,8 +52,6 @@ INSTALLED_APPS = [
     'subscribers',
     'campaigns',
     'accounts',
-    'ckeditor',
-    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -303,5 +301,3 @@ EMAIL_BURST_LIMIT = config('EMAIL_BURST_LIMIT', default=10, cast=int)  # emails 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
-
-CKEDITOR_UPLOAD_PATH = 'uploads/'
