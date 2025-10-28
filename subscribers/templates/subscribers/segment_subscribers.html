@@ -74,6 +74,7 @@
 
             <form method="post" action="{% url 'subscribers:segment_subscribers' segment.pk %}" id="add-subscribers-form">
                 {% csrf_token %}
+                <input type="hidden" name="action" value="add">
                 <div id="search-results-container">
                     <!-- AJAX results will be loaded here -->
                     <p>Start typing to search for subscribers.</p>
