@@ -21,11 +21,21 @@
             <h6 class="m-0 font-weight-bold text-primary">Current Subscribers</h6>
         </div>
         <div class="card-body">
-            {% if subscribers %}
+        {% if subscribers %}
+        <form method="post" action="{% url 'subscribers:segment_subscribers' segment.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="remove">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">Current Subscribers ({{ subscribers|length }})</h6>
+                <button type="submit" class="btn btn-sm btn-outline-danger" id="remove-selected-btn" style="display: none;">
+                    <i class="bi bi-trash me-1"></i>Remove Selected
+                </button>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead>
                         <tr>
+                            <th><input type="checkbox" id="select-all-current"></th>
                             <th>Email</th>
                             <th>Name</th>
                             <th>Status</th>
@@ -35,6 +45,7 @@
                     <tbody>
                         {% for subscriber in subscribers %}
                         <tr>
+                            <td><input type="checkbox" name="subscriber_ids" value="{{ subscriber.pk }}" class="subscriber-checkbox"></td>
                             <td>{{ subscriber.email }}</td>
                             <td>{{ subscriber.name }}</td>
                             <td>{{ subscriber.status }}</td>
@@ -44,10 +55,11 @@
                     </tbody>
                 </table>
             </div>
-            {% else %}
-            <p>No subscribers in this segment yet.</p>
-            {% endif %}
-        </div>
+        </form>
+        {% else %}
+        <p>No subscribers in this segment yet.</p>
+        {% endif %}
+    </div>
     </div>
 
     <div class="card shadow mb-4 mt-4">
@@ -80,6 +92,23 @@
         const segmentId = {{ segment.pk }};
 
         let searchTimeout;
+
+        // Handle select all for current subscribers
+        document.getElementById('select-all-current').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.subscriber-checkbox');
+            const removeBtn = document.getElementById('remove-selected-btn');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            removeBtn.style.display = this.checked || Array.from(checkboxes).some(cb => cb.checked) ? 'block' : 'none';
+        });
+
+        // Handle individual checkbox changes for current subscribers
+        document.querySelectorAll('.subscriber-checkbox').forEach(cb => {
+            cb.addEventListener('change', function() {
+                const removeBtn = document.getElementById('remove-selected-btn');
+                const anyChecked = Array.from(document.querySelectorAll('.subscriber-checkbox')).some(cb => cb.checked);
+                removeBtn.style.display = anyChecked ? 'block' : 'none';
+            });
+        });
 
         searchInput.addEventListener('keyup', function() {
             clearTimeout(searchTimeout);

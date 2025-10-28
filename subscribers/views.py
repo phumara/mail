@@ -233,18 +233,29 @@ def segment_subscribers(request, pk):
     segment = get_object_or_404(Segment, pk=pk)
 
     if request.method == 'POST':
+        action = request.POST.get('action')
         subscriber_ids = request.POST.getlist('subscriber_ids')
-        print(f"Received subscriber_ids: {subscriber_ids}") # Debug print
-        if not subscriber_ids:
-            messages.warning(request, 'No subscribers selected to add.')
-            return redirect('subscribers:segment_subscribers', pk=segment.pk)
-        subscribers_to_add = Subscriber.objects.filter(pk__in=subscriber_ids)
-        segment.subscribers.add(*subscribers_to_add)
-        messages.success(request, f'{subscribers_to_add.count()} subscribers added to {segment.name}.')
+
+        if action == 'add':
+            if not subscriber_ids:
+                messages.warning(request, 'No subscribers selected to add.')
+                return redirect('subscribers:segment_subscribers', pk=segment.pk)
+            subscribers_to_add = Subscriber.objects.filter(pk__in=subscriber_ids)
+            segment.subscribers.add(*subscribers_to_add)
+            messages.success(request, f'{subscribers_to_add.count()} subscribers added to {segment.name}.')
+
+        elif action == 'remove':
+            if not subscriber_ids:
+                messages.warning(request, 'No subscribers selected to remove.')
+                return redirect('subscribers:segment_subscribers', pk=segment.pk)
+            subscribers_to_remove = Subscriber.objects.filter(pk__in=subscriber_ids)
+            segment.subscribers.remove(*subscribers_to_remove)
+            messages.success(request, f'{subscribers_to_remove.count()} subscribers removed from {segment.name}.')
+
         return redirect('subscribers:segment_subscribers', pk=segment.pk)
 
     subscribers_in_segment = segment.subscribers.all()
-    
+
     search_query = request.GET.get('q')
     search_results = Subscriber.objects.none() # Initialize as empty queryset
 
