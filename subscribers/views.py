@@ -268,15 +268,13 @@ def segment_subscribers(request, pk):
 
 
 def search_subscribers(request):
-    """AJAX view to search for subscribers not in a given segment."""
+    """AJAX view to search for all subscribers (not filtering by segment)."""
     query = request.GET.get('q', '')
-    segment_id = request.GET.get('segment_id')
-    segment = get_object_or_404(Segment, pk=segment_id)
 
     subscribers = []
     if query:
-        # Search for subscribers not in the current segment
-        search_results = Subscriber.objects.exclude(segments=segment).filter(
+        # Search for all subscribers matching the query
+        search_results = Subscriber.objects.filter(
             Q(email__icontains=query) | Q(name__icontains=query) | Q(status__icontains=query)
         ).distinct()
 

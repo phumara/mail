@@ -68,7 +68,7 @@
         </div>
         <div class="card-body">
             <div class="mb-3">
-                <label for="subscriber-search" class="form-label">Search for subscribers to add (not yet in this segment):</label>
+                <label for="subscriber-search" class="form-label">Search for subscribers to add from all subscribers:</label>
                 <input type="text" id="subscriber-search" class="form-control" placeholder="Search by email, name, or status...">
             </div>
 
@@ -91,23 +91,31 @@
         const searchResultsContainer = document.getElementById('search-results-container');
         const addSelectedBtn = document.getElementById('add-selected-btn');
         const segmentId = {{ segment.pk }};
+        const searchUrl = "{% url 'subscribers:search_subscribers' %}";
 
         let searchTimeout;
 
         // Handle select all for current subscribers
-        document.getElementById('select-all-current').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.subscriber-checkbox');
-            const removeBtn = document.getElementById('remove-selected-btn');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-            removeBtn.style.display = this.checked || Array.from(checkboxes).some(cb => cb.checked) ? 'block' : 'none';
-        });
+        const selectAllCurrent = document.getElementById('select-all-current');
+        if (selectAllCurrent) {
+            selectAllCurrent.addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('.subscriber-checkbox');
+                const removeBtn = document.getElementById('remove-selected-btn');
+                checkboxes.forEach(cb => cb.checked = this.checked);
+                if (removeBtn) {
+                    removeBtn.style.display = this.checked || Array.from(checkboxes).some(cb => cb.checked) ? 'block' : 'none';
+                }
+            });
+        }
 
         // Handle individual checkbox changes for current subscribers
         document.querySelectorAll('.subscriber-checkbox').forEach(cb => {
             cb.addEventListener('change', function() {
                 const removeBtn = document.getElementById('remove-selected-btn');
                 const anyChecked = Array.from(document.querySelectorAll('.subscriber-checkbox')).some(cb => cb.checked);
-                removeBtn.style.display = anyChecked ? 'block' : 'none';
+                if (removeBtn) {
+                    removeBtn.style.display = anyChecked ? 'block' : 'none';
+                }
             });
         });
 
@@ -116,9 +124,16 @@
             searchTimeout = setTimeout(function() {
                 const query = searchInput.value;
                 if (query.length > 2) {
-                    fetch(`{% url 'subscribers:search_subscribers' %}?q=${query}&segment_id=${segmentId}`)
-                        .then(response => response.json())
+                    fetch(`${searchUrl}?q=${query}`)
+                        .then(response => {
+                            console.log('Response status:', response.status, 'Response type:', response.headers.get('content-type'));
+                            if (!response.ok) {
+                                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                            }
+                            return response.json();
+                        })
                         .then(data => {
+                            console.log('Received data:', data);
                             displaySearchResults(data);
                         });
                 } else {
@@ -154,7 +169,7 @@
                 };
 
             } else {
-                searchResultsContainer.innerHTML = '<p>No subscribers found matching your query not already in this segment.</p>';
+                searchResultsContainer.innerHTML = '<p>No subscribers found matching your query.</p>';
                 addSelectedBtn.style.display = 'none';
             }
         }
