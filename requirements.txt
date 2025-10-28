@@ -45,3 +45,4 @@ python-dateutil==2.9.0
 # Production server
 gunicorn==23.0.0
 whitenoise==6.7.0
+Email-validator==2.3.0
