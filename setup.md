@@ -425,7 +425,7 @@ PIDFile=/run/gunicorn_mail/pid
 User=root
 Group=root
 RuntimeDirectory=gunicorn_mail
-WorkingDirectory=/root/web/mail/mail
+WorkingDirectory=/root/web/mail
 Environment=PATH=/root/web/mail/venv/bin
 Environment="DJANGO_SETTINGS_MODULE=mail.settings_production"
 ExecStart=/root/web/mail/venv/bin/gunicorn \
