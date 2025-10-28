@@ -1,11 +1,46 @@
+# Core Django
 Django==5.2.7
-djangorestframework
+python-decouple==3.8
+
+# Database
 psycopg2-binary==2.9.9
-celery[redis]==5.4.0
+
+# Redis and Caching
 redis==5.0.8
-django-celery-beat
+django-redis==5.4.0
+
+# Celery for async tasks
+celery==5.4.0
+django-celery-beat==2.6.0
 django-celery-results==2.6.0
+
+# REST API
+djangorestframework==3.15.2
+
+# CORS
+django-cors-headers==4.4.0
+
+# Email services (choose one or more)
+# django-ses==4.2.0  # Amazon SES
+# sendgrid==6.11.0  # SendGrid
+# django-postmark==0.2.0  # Postmark
+
+# Image processing (for media management)
 Pillow==10.4.0
-django-anymail==10.3
-django-ckeditor==6.7.1
-email-validator==2.1.1
+
+# Excel/CSV processing for import/export
+pandas==2.2.2
+openpyxl==3.1.5
+
+# HTTP requests for API integrations
+requests==2.32.3
+python-dateutil==2.9.0
+
+# Development dependencies (only for development)
+# black==24.8.0
+# flake8==7.1.1
+# isort==5.13.2
+
+# Production server
+gunicorn==23.0.0
+whitenoise==6.7.0
