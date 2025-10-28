@@ -223,9 +223,10 @@ class SMTPService:
             }
 
     def send_email(self, to_email: str, subject: str, html_content: str = None,
-                   text_content: str = None, attachments: list = None, 
+                   text_content: str = None, attachments: list = None,
                    template_path: str = None, context: dict = None,
-                   from_email: str = None, from_name: str = None) -> Dict[str, Any]:
+                   from_email: str = None, from_name: str = None,
+                   cc_recipients: list = None, bcc_recipients: list = None) -> Dict[str, Any]:
         """
         Send email using the configured provider
         Returns: Dict with success status and message_id or error
@@ -241,9 +242,9 @@ class SMTPService:
             final_from_name = from_name or self.provider.from_name
 
             if self.provider.provider_type in ['sendgrid', 'mailgun', 'ses', 'postmark']:
-                return self._send_via_api(to_email, subject, html_content, text_content, attachments, final_from_email, final_from_name)
+                return self._send_via_api(to_email, subject, html_content, text_content, attachments, final_from_email, final_from_name, cc_recipients, bcc_recipients)
             else:
-                return self._send_via_smtp(to_email, subject, html_content, text_content, attachments, final_from_email, final_from_name)
+                return self._send_via_smtp(to_email, subject, html_content, text_content, attachments, final_from_email, final_from_name, cc_recipients, bcc_recipients)
         except Exception as e:
             logger.error(f"Email sending failed for {to_email}: {str(e)}")
             return {
@@ -253,7 +254,8 @@ class SMTPService:
 
     def _send_via_smtp(self, to_email: str, subject: str, html_content: str,
                        text_content: str = None, attachments: list = None,
-                       from_email: str = None, from_name: str = None) -> Dict[str, Any]:
+                       from_email: str = None, from_name: str = None,
+                       cc_recipients: list = None, bcc_recipients: list = None) -> Dict[str, Any]:
         """Send email via traditional SMTP"""
         try:
             # Create message
@@ -261,6 +263,15 @@ class SMTPService:
             msg['Subject'] = subject
             msg['From'] = f"{from_name} <{from_email}>"
             msg['To'] = to_email
+
+            if cc_recipients:
+                msg['Cc'] = ', '.join(cc_recipients)
+            
+            all_recipients = [to_email]
+            if cc_recipients:
+                all_recipients.extend(cc_recipients)
+            if bcc_recipients:
+                all_recipients.extend(bcc_recipients)
 
             if self.provider.reply_to_email:
                 msg['Reply-To'] = self.provider.reply_to_email
@@ -298,7 +309,7 @@ class SMTPService:
 
             # Send the email
             text = msg.as_string()
-            server.sendmail(from_email, to_email, text)
+            server.sendmail(from_email, all_recipients, text)
             server.quit()
 
             # Generate a message ID for tracking
@@ -317,12 +328,13 @@ class SMTPService:
 
     def _send_via_api(self, to_email: str, subject: str, html_content: str,
                       text_content: str = None, attachments: list = None,
-                      from_email: str = None, from_name: str = None) -> Dict[str, Any]:
+                      from_email: str = None, from_name: str = None,
+                      cc_recipients: list = None, bcc_recipients: list = None) -> Dict[str, Any]:
         """Send email via API-based services"""
         if self.provider.provider_type == 'sendgrid':
-            return self._send_sendgrid_email(to_email, subject, html_content, text_content, from_email, from_name)
+            return self._send_sendgrid_email(to_email, subject, html_content, text_content, from_email, from_name, cc_recipients, bcc_recipients)
         elif self.provider.provider_type == 'postmark':
-            return self._send_postmark_email(to_email, subject, html_content, text_content, from_email, from_name)
+            return self._send_postmark_email(to_email, subject, html_content, text_content, from_email, from_name, cc_recipients, bcc_recipients)
         # Add other API providers as needed
         else:
             return {
@@ -331,7 +343,8 @@ class SMTPService:
             }
 
     def _send_sendgrid_email(self, to_email: str, subject: str, html_content: str,
-                             text_content: str = None, from_email: str = None, from_name: str = None) -> Dict[str, Any]:
+                             text_content: str = None, from_email: str = None, from_name: str = None,
+                             cc_recipients: list = None, bcc_recipients: list = None) -> Dict[str, Any]:
         """Send email via SendGrid API"""
         url = "https://api.sendgrid.com/v3/mail/send"
         headers = {
@@ -350,6 +363,12 @@ class SMTPService:
             },
             'content': []
         }
+
+        if cc_recipients:
+            data['personalizations'][0]['cc'] = [{'email': email} for email in cc_recipients]
+        
+        if bcc_recipients:
+            data['personalizations'][0]['bcc'] = [{'email': email} for email in bcc_recipients]
 
         if text_content:
             data['content'].append({'type': 'text/plain', 'value': text_content})
@@ -372,7 +391,8 @@ class SMTPService:
             }
 
     def _send_postmark_email(self, to_email: str, subject: str, html_content: str,
-                             text_content: str = None, from_email: str = None, from_name: str = None) -> Dict[str, Any]:
+                             text_content: str = None, from_email: str = None, from_name: str = None,
+                             cc_recipients: list = None, bcc_recipients: list = None) -> Dict[str, Any]:
         """Send email via Postmark API"""
         url = "https://api.postmarkapp.com/email"
         headers = {
@@ -386,6 +406,12 @@ class SMTPService:
             'Subject': subject,
             'HtmlBody': html_content,
         }
+
+        if cc_recipients:
+            data['Cc'] = ', '.join(cc_recipients)
+        
+        if bcc_recipients:
+            data['Bcc'] = ', '.join(bcc_recipients)
 
         if text_content:
             data['TextBody'] = text_content
@@ -406,20 +432,18 @@ class SMTPService:
                 'error': f'Postmark API error: {response.status_code} - {response.text}'
             }
 
-    def _add_attachment(self, msg: MIMEMultipart, attachment: Dict[str, Any]):
-        """Add attachment to email message"""
-        filename = attachment.get('filename')
-        content = attachment.get('content')
-        mimetype = attachment.get('mimetype', 'application/octet-stream')
+    def _add_attachment(self, msg: MIMEMultipart, attachment_file):
+        """Add attachment to email message from a file object"""
+        import os
+        from django.core.files.uploadedfile import InMemoryUploadedFile
 
+        filename = os.path.basename(attachment_file.name)
+        content = attachment_file.read()
+        
         part = MIMEBase('application', 'octet-stream')
         part.set_payload(content)
         encoders.encode_base64(part)
-        part.add_header(
-            'Content-Disposition',
-            f'attachment; filename="{filename}"'
-        )
-        part.add_header('Content-Type', mimetype)
+        part.add_header('Content-Disposition', 'attachment', filename=filename)
         msg.attach(part)
 
 
@@ -438,8 +462,8 @@ class SMTPManager:
         Select the best available SMTP provider based on:
         1. Active status
         2. Rate limits
-        3. Success rate
-        4. Load balancing
+        3. Bounce rate
+        4. IP Rotation (Round-Robin based on last used time)
         """
         from .models import SMTPProvider
 
@@ -448,32 +472,33 @@ class SMTPManager:
         if not providers:
             return None
 
-        # Filter providers within rate limits
+        # Filter providers within rate limits and check bounce rate
         available_providers = []
         for provider in providers:
+            # Deactivate provider if bounce rate is too high
+            if provider.get_bounce_rate() > provider.bounce_rate_threshold:
+                provider.is_active = False
+                provider.save(update_fields=['is_active'])
+                logger.warning(f'Provider {provider.name} deactivated due to high bounce rate.')
+                continue
+
+            # Check warm-up limits
+            is_within_warmup, limit = provider.is_within_warmup_limits()
+            if not is_within_warmup:
+                logger.info(f'Provider {provider.name} is in warm-up and has reached its daily limit of {limit}.')
+                continue
+
             if provider.is_within_limits():
                 available_providers.append(provider)
 
         if not available_providers:
             return None
 
-        # Sort by success rate (delivery rate) and usage
-        provider_scores = []
-        for provider in available_providers:
-            # Calculate score based on delivery rate and recent usage
-            delivery_rate = provider.get_delivery_rate()
-            # Prefer providers that haven't been used recently
-            last_used_penalty = 0
-            if provider.last_used:
-                hours_since_used = (timezone.now() - provider.last_used).total_seconds() / 3600
-                last_used_penalty = min(hours_since_used / 24, 1) * 10  # Max 10 point bonus
+        # Sort providers by last used time for round-robin rotation.
+        # Providers that have never been used (last_used is None) are prioritized.
+        available_providers.sort(key=lambda p: (p.last_used is not None, p.last_used))
 
-            score = delivery_rate + last_used_penalty
-            provider_scores.append((provider, score))
-
-        # Return provider with highest score
-        provider_scores.sort(key=lambda x: x[1], reverse=True)
-        return provider_scores[0][0]
+        return available_providers[0]
 
     @staticmethod
     def test_all_providers() -> Dict[str, Any]:

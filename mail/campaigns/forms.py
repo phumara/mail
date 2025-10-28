@@ -1,5 +1,10 @@
 from django import forms
-from .models import Media, Campaign, EmailTemplate, SMTPProvider
+from .models import Media, Campaign, EmailTemplate, SMTPProvider, Attachment
+
+class AttachmentForm(forms.ModelForm):
+    class Meta:
+        model = Attachment
+        fields = ['file']
 from subscribers.models import Segment
 
 class MediaForm(forms.ModelForm):
@@ -14,7 +19,7 @@ class CampaignForm(forms.ModelForm):
 
         model = Campaign
 
-        fields = ['name', 'subject', 'from_name', 'from_email', 'reply_to_email', 'template', 'html_content', 'text_content', 'subscriber_segments', 'smtp_provider']
+        fields = ['name', 'subject', 'from_name', 'from_email', 'reply_to_email', 'cc_recipients', 'bcc_recipients', 'template', 'html_content', 'text_content', 'subscriber_segments', 'smtp_provider']
 
     def __init__(self, *args, **kwargs):
 
@@ -48,6 +53,8 @@ class CampaignForm(forms.ModelForm):
         self.fields['from_name'].widget.attrs.update({'class': 'form-control', 'placeholder': 'From Name'})
         self.fields['from_email'].widget.attrs.update({'class': 'form-control', 'placeholder': 'sender@example.com'})
         self.fields['reply_to_email'].widget.attrs.update({'class': 'form-control', 'placeholder': 'replyto@example.com'})
+        self.fields['cc_recipients'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Comma-separated emails for CC'})
+        self.fields['bcc_recipients'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Comma-separated emails for BCC'})
         self.fields['template'].widget.attrs.update({'class': 'form-control'})
         self.fields['html_content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'HTML email content', 'rows': 10})
         self.fields['text_content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Plain text email content (optional)', 'rows': 5})

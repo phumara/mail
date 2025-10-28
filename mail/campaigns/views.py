@@ -5,8 +5,9 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from .models import SMTPProvider, Campaign, EmailLog, EmailTemplate
-from .forms import CampaignForm, TemplateForm, SMTPProviderForm
+from django.forms import formset_factory, modelformset_factory
+from .models import SMTPProvider, Campaign, EmailLog, EmailTemplate, Attachment
+from .forms import CampaignForm, TemplateForm, SMTPProviderForm, AttachmentForm
 from .smtp_service import SMTPService, SMTPManager
 from subscribers.models import Subscriber
 import logging
@@ -16,6 +17,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .models import Media
 from .forms import MediaForm
+from .models import Blacklist
 
 
 @login_required
@@ -246,15 +248,28 @@ def campaign_list(request):
 @login_required
 def campaign_create(request):
     """Create a new campaign"""
+    AttachmentFormSet = formset_factory(AttachmentForm, extra=5, max_num=10)  # Allow up to 10 attachments
+
     if request.method == 'POST':
-        form = CampaignForm(request.POST)
-        if form.is_valid():
+        form = CampaignForm(request.POST, request.FILES)
+        formset = AttachmentFormSet(request.POST, request.FILES, prefix='attachments')
+
+        if form.is_valid() and formset.is_valid():
             campaign = form.save()
+
+            for attachment_form in formset:
+                if attachment_form.cleaned_data and attachment_form.cleaned_data.get('file'):
+                    attachment = attachment_form.save(commit=False)
+                    attachment.campaign = campaign
+                    attachment.save()
+
             messages.success(request, f'Campaign "{campaign.name}" created successfully!')
             return redirect('campaigns:campaign_list')
     else:
         form = CampaignForm()
-    return render(request, 'campaigns/campaign_create.html', {'form': form})
+        formset = AttachmentFormSet(prefix='attachments')
+
+    return render(request, 'campaigns/campaign_create.html', {'form': form, 'formset': formset})
 
 
 @login_required
@@ -273,17 +288,43 @@ def campaign_create_simple(request):
 
 @login_required
 def campaign_edit(request, pk):
-    """Edit a campaign"""
     campaign = get_object_or_404(Campaign, pk=pk)
+    AttachmentFormSet = modelformset_factory(Attachment, form=AttachmentForm, extra=10, can_delete=True)
+
     if request.method == 'POST':
         form = CampaignForm(request.POST, instance=campaign)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f'Campaign "{campaign.name}" updated successfully!')
+        formset = AttachmentFormSet(request.POST, request.FILES, queryset=Attachment.objects.filter(campaign=campaign))
+        
+        if form.is_valid() and formset.is_valid():
+            campaign = form.save()
+            
+            for form in formset:
+                if form.cleaned_data:
+                    if form.cleaned_data.get('DELETE'):
+                        if form.instance.pk:
+                            form.instance.delete()
+                    elif form.cleaned_data.get('file'):
+                        attachment = form.save(commit=False)
+                        attachment.campaign = campaign
+                        attachment.save()
+
+            messages.success(request, 'Campaign updated successfully.')
             return redirect('campaigns:campaign_list')
+        else:
+            if not form.is_valid():
+                messages.error(request, 'Please correct the errors in the campaign details.')
+            if not formset.is_valid():
+                messages.error(request, 'Please correct the errors in the attachments.')
+
     else:
         form = CampaignForm(instance=campaign)
-    return render(request, 'campaigns/edit.html', {'form': form, 'campaign': campaign})
+        formset = AttachmentFormSet(queryset=Attachment.objects.filter(campaign=campaign))
+
+    return render(request, 'campaigns/edit.html', {
+        'form': form,
+        'campaign': campaign,
+        'formset': formset
+    })
 
 
 @login_required
@@ -373,6 +414,10 @@ def campaign_send(request, pk):
         smtp_service = SMTPService(campaign.smtp_provider)
         subscribers_to_send = Subscriber.objects.filter(segments__in=campaign.subscriber_segments.all()).distinct()
 
+        # Exclude blacklisted emails
+        blacklisted_emails = Blacklist.objects.values_list('email', flat=True)
+        subscribers_to_send = subscribers_to_send.exclude(email__in=blacklisted_emails)
+
         for subscriber in subscribers_to_send:
             try:
                 subject = campaign.subject.replace('{subscriber.name}', subscriber.name or '').replace('{subscriber.email}', subscriber.email)
@@ -383,13 +428,18 @@ def campaign_send(request, pk):
 
                 logging.warning(f'To: {subscriber.email}, Subject: {subject}')
 
+                attachments = [attachment.file for attachment in campaign.attachments.all()]
+
                 result = smtp_service.send_email(
                     to_email=subscriber.email,
                     subject=subject,
                     html_content=html_content,
                     text_content=text_content,
                     from_email=from_email,
-                    from_name=from_name
+                    from_name=from_name,
+                    cc_recipients=campaign.cc_recipients.split(',') if campaign.cc_recipients else None,
+                    bcc_recipients=campaign.bcc_recipients.split(',') if campaign.bcc_recipients else None,
+                    attachments=attachments
                 )
 
                 if result['success']:
@@ -462,7 +512,7 @@ def template_create(request):
             template = form.save(commit=False)
             template.created_by = request.user
             template.save()
-            messages.success(request, f'Template "{template.name}" created successfully!')
+            messages.success(f'Template "{template.name}" created successfully!')
             return redirect('campaigns:template_list')
     else:
         form = TemplateForm()
@@ -477,7 +527,7 @@ def template_edit(request, pk):
         form = TemplateForm(request.POST, instance=template)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Template "{template.name}" updated successfully!')
+            messages.success(f'Template "{template.name}" updated successfully!')
             return redirect('campaigns:template_list')
     else:
         form = TemplateForm(instance=template)
@@ -490,7 +540,7 @@ def template_delete(request, pk):
     template = get_object_or_404(EmailTemplate, pk=pk)
     if request.method == 'POST':
         template.delete()
-        messages.success(request, f'Template "{template.name}" deleted successfully!')
+        messages.success(f'Template "{template.name}" deleted successfully!')
         return redirect('campaigns:template_list')
     return render(request, 'campaigns/template_delete.html', {'template': template})
 
@@ -529,3 +579,33 @@ class MediaDeleteView(View):
         media = get_object_or_404(Media, pk=pk)
         media.delete()
         return redirect('campaigns:media_list')
+
+
+@csrf_exempt
+@require_POST
+def webhook_handler(request):
+    try:
+        payload = json.loads(request.body)
+        event_type = payload.get('event')
+        email = payload.get('email')
+        reason = payload.get('reason')
+
+        if event_type in ['bounce', 'complaint']:
+            Blacklist.objects.get_or_create(
+                email=email,
+                defaults={'reason': reason or 'No reason provided'}
+            )
+            # Also update the EmailLog if possible
+            try:
+                log = EmailLog.objects.filter(subscriber_email=email).latest('sent_at')
+                log.status = 'bounced' if event_type == 'bounce' else 'failed'
+                log.bounce_reason = reason
+                log.save()
+            except EmailLog.DoesNotExist:
+                pass # No log found for this email
+
+        return JsonResponse({'status': 'success'}, status=200)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

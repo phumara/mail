@@ -39,4 +39,5 @@ urlpatterns = [
     path('templates/create/', views.template_create, name='template_create'),
     path('templates/<int:pk>/edit/', views.template_edit, name='template_edit'),
     path('templates/<int:pk>/delete/', views.template_delete, name='template_delete'),
+    path('webhooks/handle/', views.webhook_handler, name='webhook_handler'),
 ]

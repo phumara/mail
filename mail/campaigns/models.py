@@ -55,6 +55,7 @@ class SMTPProvider(models.Model):
     emails_per_day = models.IntegerField(_('Daily Email Limit'), default=1000)
     emails_per_hour = models.IntegerField(_('Hourly Email Limit'), default=100)
     emails_per_second = models.IntegerField(_('Per Second Limit'), default=2)
+    bounce_rate_threshold = models.FloatField(_('Bounce Rate Threshold (%)'), default=5.0, help_text=_('The bounce rate at which to deactivate the provider.'))
 
     # Additional Settings
     from_email = models.EmailField(_('From Email'), validators=[EmailValidator()])
@@ -67,6 +68,16 @@ class SMTPProvider(models.Model):
     total_bounced = models.BigIntegerField(_('Total Bounced'), default=0)
     total_opened = models.BigIntegerField(_('Total Opened'), default=0)
     total_clicked = models.BigIntegerField(_('Total Clicked'), default=0)
+
+    # Warm-up
+    is_warming_up = models.BooleanField(_('Warming Up'), default=False)
+    warmup_started_at = models.DateTimeField(_('Warm-up Start Time'), null=True, blank=True)
+    warmup_schedule = models.JSONField(
+        _('Warm-up Schedule'),
+        default=dict,
+        blank=True,
+        help_text=_('JSON schedule for warm-up, e.g., {"1": 50, "2": 100, "14": 10000}')
+    )
 
     # Metadata
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
@@ -93,6 +104,39 @@ class SMTPProvider(models.Model):
         if self.total_sent == 0:
             return 0
         return (self.total_delivered / self.total_sent) * 100
+
+    def get_bounce_rate(self):
+        """Calculate bounce rate percentage"""
+        if self.total_sent == 0:
+            return 0
+        return (self.total_bounced / self.total_sent) * 100
+
+    def is_within_warmup_limits(self):
+        """Check if the provider is within the warm-up sending limits."""
+        if not self.is_warming_up or not self.warmup_started_at:
+            return True, None  # Not in warm-up mode
+
+        from django.utils import timezone
+        from datetime import timedelta
+
+        days_since_warmup_start = (timezone.now() - self.warmup_started_at).days + 1
+        daily_limit = self.warmup_schedule.get(str(days_since_warmup_start))
+
+        if daily_limit is None:
+            # If no limit is defined for the current day, assume warm-up is complete
+            self.is_warming_up = False
+            self.save()
+            return True, None
+
+        today_sent = EmailLog.objects.filter(
+            smtp_provider=self,
+            sent_at__date=timezone.now().date()
+        ).count()
+
+        if today_sent >= daily_limit:
+            return False, daily_limit
+
+        return True, daily_limit
 
     def is_within_limits(self):
         """Check if provider is within rate limits"""
@@ -162,6 +206,8 @@ class Campaign(models.Model):
     from_email = models.EmailField(_('From Email'))
     from_name = models.CharField(_('From Name'), max_length=255)
     reply_to_email = models.EmailField(_('Reply To'), blank=True)
+    cc_recipients = models.TextField(_('CC Recipients'), blank=True, help_text=_('Comma-separated list of email addresses'))
+    bcc_recipients = models.TextField(_('BCC Recipients'), blank=True, help_text=_('Comma-separated list of email addresses'))
 
     # Content
     html_content = RichTextUploadingField(_('HTML Content'), default='<p>Default campaign content</p>')
@@ -214,6 +260,18 @@ class Campaign(models.Model):
         if self.total_delivered == 0:
             return 0
         return (self.total_opened / self.total_delivered) * 100
+
+
+class Attachment(models.Model):
+    """Model to store campaign attachments"""
+    campaign = models.ForeignKey(Campaign, related_name='attachments', on_delete=models.CASCADE)
+    file = models.FileField(upload_to='attachments/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.file.name
+
+
 
 
 class EmailLog(models.Model):
@@ -271,3 +329,12 @@ class EmailLog(models.Model):
 
     def __str__(self):
         return f"{self.subscriber_email} - {self.subject} ({self.status})"
+
+
+class Blacklist(models.Model):
+    email = models.EmailField(unique=True)
+    reason = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email

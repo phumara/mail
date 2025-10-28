@@ -13,7 +13,7 @@
         {% endfor %}
     {% endif %}
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         <div class="row">
@@ -53,9 +53,33 @@
                         </div>
 
                         <div class="mb-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Attachments</h6>
+                            {{ formset.management_form }}
+                            {% for form in formset %}
+                                <div class="mb-2">
+                                    {{ form.file }}
+                                    {% if form.file.errors %}<div class="text-danger">{{ form.file.errors }}</div>{% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
                             <label for="id_reply_to_email" class="form-label">Reply To Email (optional)</label>
                             {{ form.reply_to_email }}
                             {% if form.reply_to_email.errors %}<div class="text-danger">{{ form.reply_to_email.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_cc_recipients" class="form-label">CC Recipients (optional)</label>
+                                {{ form.cc_recipients }}
+                                {% if form.cc_recipients.errors %}<div class="text-danger">{{ form.cc_recipients.errors }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_bcc_recipients" class="form-label">BCC Recipients (optional)</label>
+                                {{ form.bcc_recipients }}
+                                {% if form.bcc_recipients.errors %}<div class="text-danger">{{ form.bcc_recipients.errors }}</div>{% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
