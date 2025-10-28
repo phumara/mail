@@ -3,7 +3,7 @@ djangorestframework
 psycopg2-binary==2.9.9
 celery[redis]==5.4.0
 redis==5.0.8
-django-celery-beat==2.6.0
+django-celery-beat
 django-celery-results==2.6.0
 Pillow==10.4.0
 django-anymail==10.3
