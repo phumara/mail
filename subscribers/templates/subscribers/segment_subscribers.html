@@ -86,7 +86,7 @@
             searchTimeout = setTimeout(function() {
                 const query = searchInput.value;
                 if (query.length > 2) {
-                    fetch(`/subscribers/search-subscribers/?q=${query}&segment_id=${segmentId}`)
+                    fetch(`{% url 'subscribers:search_subscribers' %}?q=${query}&segment_id=${segmentId}`)
                         .then(response => response.json())
                         .then(data => {
                             displaySearchResults(data);
