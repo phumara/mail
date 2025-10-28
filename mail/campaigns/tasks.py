@@ -1,3 +1,4 @@
+from subscribers.models import Subscriber
 from celery import shared_task
 from django.utils import timezone
 from django.core.cache import cache
@@ -77,6 +78,17 @@ def send_campaign_email(campaign_id: int, subscriber_email: str, email_content: 
                 email_log.failed_at = timezone.now()
                 email_log.error_message = result.get('error', 'Unknown error')
                 email_log.save()
+
+                # Check for hard bounce
+                error_message = result.get('error', '')
+                if '550' in error_message or '554' in error_message:
+                    try:
+                        subscriber = Subscriber.objects.get(email=subscriber_email)
+                        subscriber.status = 'bounced'
+                        subscriber.save(update_fields=['status'])
+                        logger.warning(f"Subscriber {subscriber_email} marked as bounced due to: {error_message}")
+                    except Subscriber.DoesNotExist:
+                        logger.error(f"Could not find subscriber {subscriber_email} to mark as bounced.")
 
                 logger.error(f"Failed to send email to {subscriber_email}: {result.get('error')}")
 
@@ -200,23 +212,55 @@ def send_bulk_campaign(campaign_id: int, batch_size: int = 50, delay: int = 1) -
 @shared_task
 def process_bounced_emails():
     """
-    Process bounced emails and update subscriber status
-    This would integrate with bounce handling services
+    Process bounced emails from all active SMTP providers
     """
-    # Placeholder for bounce processing logic
-    # This would typically:
-    # 1. Check bounce webhooks from email providers
-    # 2. Parse bounce notifications
-    # 3. Update EmailLog status
-    # 4. Update subscriber status if too many bounces
-    # 5. Update SMTP provider statistics
+    active_providers = SMTPProvider.objects.filter(is_active=True)
+    total_bounces_processed = 0
 
-    logger.info("Processing bounced emails...")
-    # Implementation would depend on the specific email provider APIs
+    for provider in active_providers:
+        service = SMTPService(provider)
+        bounces = service.get_bounces()
 
+        if not bounces:
+            logger.info(f"No bounces to process for provider {provider.name}")
+            continue
+
+        for bounce in bounces:
+            try:
+                with transaction.atomic():
+                    # Find the corresponding email log
+                    email_log = EmailLog.objects.get(message_id=bounce['message_id'])
+
+                    # Update email log
+                    email_log.status = 'bounced'
+                    email_log.bounced_at = bounce.get('bounced_at', timezone.now())
+                    email_log.error_message = bounce.get('error', 'Bounced')
+                    email_log.save()
+
+                    # Update subscriber status
+                    subscriber = Subscriber.objects.get(email=email_log.subscriber_email)
+                    subscriber.status = 'bounced'
+                    subscriber.save(update_fields=['status'])
+
+                    # Update campaign stats
+                    campaign = email_log.campaign
+                    campaign.total_bounced += 1
+                    campaign.save(update_fields=['total_bounced'])
+
+                    total_bounces_processed += 1
+                    logger.info(f"Processed bounce for {email_log.subscriber_email} (Message ID: {bounce['message_id']}) ")
+
+            except EmailLog.DoesNotExist:
+                logger.warning(f"Could not find EmailLog with Message ID: {bounce['message_id']}")
+            except Subscriber.DoesNotExist:
+                logger.warning(f"Could not find Subscriber for email: {email_log.subscriber_email}")
+            except Exception as e:
+                logger.error(f"Error processing bounce (Message ID: {bounce['message_id']}): {str(e)}")
+
+    logger.info(f"Completed bounce processing. Total bounces processed: {total_bounces_processed}")
     return {
         'success': True,
-        'processed': 0
+        'total_bounces_processed': total_bounces_processed
     }
 
 

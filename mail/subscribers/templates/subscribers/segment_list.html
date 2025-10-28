@@ -14,11 +14,12 @@
 
 </div>
 
-<div class="mb-3">
-
-    <input type="text" class="form-control" placeholder="Search lists...">
-
-</div>
+<form method="get" action="" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="q" class="form-control" placeholder="Search lists..." value="{{ request.GET.q }}">
+        <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+</form>
 
 <table class="table table-striped">
 
@@ -103,5 +104,23 @@
     </tbody>
 
 </table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if segments.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ segments.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ segments.number }} of {{ segments.paginator.num_pages }}.
+        </span>
+
+        {% if segments.has_next %}
+            <a href="?page={{ segments.next_page_number }}">next</a>
+            <a href="?page={{ segments.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 
 {% endblock %}

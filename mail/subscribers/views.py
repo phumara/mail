@@ -3,25 +3,39 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 import csv
 import io
+from email_validator import validate_email, EmailNotValidError
 
 from .models import Subscriber, Segment
 
-from .forms import SubscriberForm, SegmentForm
+from .forms import SubscriberForm, SegmentForm, CSVImportForm
 
 @login_required
 def subscriber_list(request):
-    """List subscribers with permission-based filtering"""
+    """List subscribers with permission-based filtering and search"""
     # Check if user has global subscriber management permission
     if request.user.can_manage_subscribers:
         # User can see all subscribers
-        subscribers = Subscriber.objects.all()
+        subscribers_list = Subscriber.objects.all()
     else:
         # User can only see subscribers they created
-        subscribers = Subscriber.objects.filter(created_by=request.user)
-        if not subscribers.exists():
-            messages.info(request, 'You haven\'t created any subscribers yet.')
+        subscribers_list = Subscriber.objects.filter(created_by=request.user)
+        if not subscribers_list.exists():
+            messages.info(request, "You haven't created any subscribers yet.")
+
+    search_query = request.GET.get('q')
+    if search_query:
+        subscribers_list = subscribers_list.filter(
+            Q(email__icontains=search_query) |
+            Q(name__icontains=search_query) |
+            Q(status__icontains=search_query)
+        ).distinct()
+
+    paginator = Paginator(subscribers_list, 10)  # Show 10 subscribers per page
+    page_number = request.GET.get('page')
+    subscribers = paginator.get_page(page_number)
 
     return render(request, 'subscribers/list.html', {'subscribers': subscribers})
 
@@ -86,60 +100,60 @@ def subscriber_delete(request, pk):
     return render(request, 'subscribers/delete.html', {'subscriber': subscriber})
 
 def subscriber_import(request):
+    invalid_emails = []
+    if request.method == 'POST':
+        form = CSVImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = form.cleaned_data['csv_file']
+            segment = form.cleaned_data['segment']
+            
+            try:
+                file_data = csv_file.read().decode('utf-8')
+                io_string = io.StringIO(file_data)
+                next(io_string)  # skip header
 
-    segments = Segment.objects.all()
+                imported_count = 0
+                for row in csv.reader(io_string, delimiter=','):
+                    if len(row) >= 1:
+                        email = row[0].strip()
+                        name = row[1].strip() if len(row) > 1 else ''
 
-    if request.method == 'POST' and request.FILES['csv_file']:
+                        if not email:
+                            continue
 
-        csv_file = request.FILES['csv_file']
+                        try:
+                            # Validate email
+                            validate_email(email, check_deliverability=False)
+                            
+                            # Create or update subscriber
+                            subscriber, created = Subscriber.objects.get_or_create(
+                                email=email,
+                                defaults={'name': name, 'created_by': request.user if request.user.is_authenticated else None}
+                            )
+                            segment.subscribers.add(subscriber)
+                            
+                            if created:
+                                imported_count += 1
 
-        segment_id = request.POST.get('segment')
+                        except EmailNotValidError as e:
+                            invalid_emails.append({'email': email, 'reason': str(e)})
 
-        if not csv_file.name.endswith('.csv'):
+                if imported_count > 0:
+                    messages.success(request, f'{imported_count} subscribers imported and added to {segment.name}.')
+                
+                if not invalid_emails:
+                    return redirect('subscribers:subscriber_list')
 
-            messages.error(request, 'File is not CSV type')
+            except Exception as e:
+                messages.error(request, f'Error processing file: {e}')
 
-            return redirect('subscribers:subscriber_import')
+    else:
+        form = CSVImportForm()
 
-        if not segment_id:
-
-            messages.error(request, 'Please select a list.')
-
-            return redirect('subscribers:subscriber_import')
-
-        segment = get_object_or_404(Segment, pk=segment_id)
-
-        file_data = csv_file.read().decode('utf-8')
-
-        io_string = io.StringIO(file_data)
-
-        next(io_string)  # skip header
-
-        imported_count = 0
-
-        for row in csv.reader(io_string, delimiter=','):
-
-            if len(row) >= 2:
-
-                email = row[0].strip()
-
-                name = row[1].strip() if len(row) > 1 else ''
-
-                if email:
-
-                    subscriber, created = Subscriber.objects.get_or_create(email=email, defaults={'name': name})
-
-                    segment.subscribers.add(subscriber)
-
-                    if created:
-
-                        imported_count += 1
-
-        messages.success(request, f'{imported_count} subscribers imported and added to {segment.name}.')
-
-        return redirect('subscribers:subscriber_list')
-
-    return render(request, 'subscribers/import.html', {'segments': segments})
+    return render(request, 'subscribers/import.html', {
+        'form': form,
+        'invalid_emails': invalid_emails
+    })
 
 def subscriber_bounces(request):
 
@@ -148,9 +162,14 @@ def subscriber_bounces(request):
     return render(request, 'subscribers/bounces.html', {'bounces': bounces})
 
 def segment_list(request):
+    segments_list = Segment.objects.all()
+    search_query = request.GET.get('q')
+    if search_query:
+        segments_list = segments_list.filter(name__icontains=search_query)
 
-    segments = Segment.objects.all()
-
+    paginator = Paginator(segments_list, 10)  # Show 10 segments per page
+    page_number = request.GET.get('page')
+    segments = paginator.get_page(page_number)
     return render(request, 'subscribers/segment_list.html', {'segments': segments})
 
 def segment_create(request):

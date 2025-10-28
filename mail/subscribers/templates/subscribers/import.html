@@ -4,42 +4,36 @@
 
 <h1>Import Subscribers</h1>
 
-<form method="post" enctype="multipart/form-data">
-
-    {% csrf_token %}
-
-    <div class="mb-3">
-
-        <label for="segment">Select List</label>
-
-        <select class="form-select" name="segment" required>
-
-            <option value="">Choose a list</option>
-
-            {% for segment in segments %}
-
-            <option value="{{ segment.pk }}">{{ segment.name }}</option>
-
+{% if invalid_emails %}
+<div class="alert alert-danger">
+    <h4>Invalid Emails Found</h4>
+    <p>The following emails could not be imported. Please correct them and try again.</p>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in invalid_emails %}
+            <tr>
+                <td>{{ item.email }}</td>
+                <td>{{ item.reason }}</td>
+            </tr>
             {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 
-        </select>
-
-    </div>
-
-    <div class="mb-3">
-
-        <label for="csv_file">CSV File</label>
-
-        <input type="file" class="form-control" name="csv_file" accept=".csv" required>
-
-        <div class="form-text">CSV should have columns: email, name. Subscribers will be added to the selected list.</div>
-
-    </div>
-
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="form-text">CSV should have columns: email, name. Subscribers will be added to the selected list.</div>
+    <br>
     <button type="submit" class="btn btn-primary">Import</button>
-
     <a href="{% url 'subscribers:subscriber_list' %}" class="btn btn-secondary">Cancel</a>
-
 </form>
 
 {% endblock %}

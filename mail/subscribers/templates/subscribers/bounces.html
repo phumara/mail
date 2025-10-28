@@ -1,47 +1,44 @@
 {% extends 'base.html' %}
 
+{% block title %}Bounced Subscribers{% endblock %}
+
 {% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Bounced Subscribers</h1>
+    <p class="mb-4">Subscribers who have resulted in a hard bounce.</p>
 
-<h1>Bounces</h1>
-
-<table class="table table-striped">
-
-    <thead>
-
-        <tr>
-
-            <th>Email</th>
-
-            <th>Name</th>
-
-            <th>Status</th>
-
-            <th>Created</th>
-
-        </tr>
-
-    </thead>
-
-    <tbody>
-
-        {% for bounce in bounces %}
-
-        <tr>
-
-            <td>{{ bounce.email }}</td>
-
-            <td>{{ bounce.name }}</td>
-
-            <td>{{ bounce.status }}</td>
-
-            <td>{{ bounce.created_at }}</td>
-
-        </tr>
-
-        {% endfor %}
-
-    </tbody>
-
-</table>
-
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Bounced Subscribers</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Bounced At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bounce in bounces %}
+                        <tr>
+                            <td>{{ bounce.email }}</td>
+                            <td>{{ bounce.name }}</td>
+                            <td><span class="badge badge-danger">{{ bounce.get_status_display }}</span></td>
+                            <td>{{ bounce.updated_at|date:"Y-m-d H:i" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No bounced subscribers found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
