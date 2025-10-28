@@ -3,7 +3,7 @@ Django==5.2.7
 python-decouple==3.8
 
 # Database
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.10
 dj-database-url==2.2.0
 
 # Redis and Caching
@@ -12,7 +12,7 @@ django-redis==5.4.0
 
 # Celery for async tasks
 celery==5.4.0
-django-celery-beat==2.6.0
+django-celery-beat==2.8.1
 django-celery-results==2.6.0
 
 # REST API
@@ -30,7 +30,7 @@ django-cors-headers==4.4.0
 Pillow==10.4.0
 
 # Excel/CSV processing for import/export
-pandas==2.2.2
+pandas==2.2.3
 openpyxl==3.1.5
 
 # HTTP requests for API integrations
