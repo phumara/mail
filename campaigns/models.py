@@ -3,7 +3,7 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import EmailValidator
 import json
-from ckeditor_uploader.fields import RichTextUploadingField
+from django.db import models
 
 
 class Media(models.Model):
@@ -168,7 +168,7 @@ class EmailTemplate(models.Model):
 
     name = models.CharField(_('Template Name'), max_length=255, unique=True)
     subject = models.CharField(_('Email Subject'), max_length=500)
-    html_content = RichTextUploadingField(_('HTML Content'))
+    html_content = models.TextField(_('HTML Content'))
     text_content = models.TextField(_('Text Content'), blank=True)
     is_active = models.BooleanField(_('Active'), default=True)
 
@@ -210,7 +210,7 @@ class Campaign(models.Model):
     bcc_recipients = models.TextField(_('BCC Recipients'), blank=True, help_text=_('Comma-separated list of email addresses'))
 
     # Content
-    html_content = RichTextUploadingField(_('HTML Content'), default='<p>Default campaign content</p>')
+    html_content = models.TextField(_('HTML Content'), default='<p>Default campaign content</p>')
     text_content = models.TextField(_('Text Content'), blank=True)
 
     # Template reference
