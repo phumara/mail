@@ -79,7 +79,7 @@
                 console.log('CSRF Token:', csrftoken);
                 console.log('User authenticated:', '{{ user.is_authenticated }}');
 
-                fetch(`/campaigns/test-smtp-connection/${providerId}/`, {
+                fetch(`/mail/campaigns/test-smtp-connection/${providerId}/`, {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': csrftoken,
