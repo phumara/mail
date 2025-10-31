@@ -79,55 +79,29 @@ This configuration will deploy your Django mail application at `phuma.ddns.net/m
 
 Update your Django settings for multi-app deployment:
 
-**File: `config/settings_productions.py`** - Add these modifications:
+**File: `mail/settings_productions.py`** - Add these modifications:
 
 ```python
 from .settings import *
-
+from decouple import config
 import os
-
 import dj_database_url
 
-from dotenv import load_dotenv
-
-
-
-load_dotenv()
-
-
-
-SECRET_KEY = os.environ.get('SECRET_KEY')
-
-if not SECRET_KEY:
-
-    raise ValueError("No SECRET_KEY set in .env or environment!")
-
-
+SECRET_KEY = config('SECRET_KEY')
 
 # Production settings
-
-DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "yes")
-
-
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 # Allowed hosts from environment variable
-
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
 
 # Database configuration using DATABASE_URL
-
 DATABASES = {
-
     'default': dj_database_url.config(
-
-        default=os.environ.get('DATABASE_URL'),
-
+        default=config('DATABASE_URL'),
         conn_max_age=600,
-
         conn_health_checks=True,
-
     )
-
 }
 
 
@@ -360,31 +334,85 @@ CACHES = {
 
 
 
+# Override authentication URLs for production with /mail/ prefix
+LOGIN_URL = '/mail/accounts/login/'
+LOGIN_REDIRECT_URL = '/mail/'
+LOGOUT_REDIRECT_URL = '/mail/accounts/login/'
+
 # Create necessary directories
 os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)
 os.makedirs(os.path.join(BASE_DIR, 'media'), exist_ok=True)
 os.makedirs(os.path.join(BASE_DIR, 'static'), exist_ok=True)
 os.makedirs(os.path.join(BASE_DIR, 'staticfiles'), exist_ok=True)
+
+
 ---
 urls_production.py
 ----------------------------------------------------
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from . import views
 
-urlpatterns = [
+def api_home(request):
+    return JsonResponse({
+        "name": "Mail Campaign API",
+        "version": "1.0.0",
+        "endpoints": {
+            "admin": "mail/admin/",
+            "accounts": {
+                "login": "mail/accounts/login/",
+                "logout": "mail/accounts/logout/",
+                "profile": "mail/accounts/profile/",
+            },
+            "campaigns": "mail/campaigns/",
+            "subscribers": "mail/subscribers/",
+        },
+        "status": "Production"
+    }, json_dumps_params={'indent': 2})
+
+
+# All mail routes grouped here
+mail_urlpatterns = [
+    path('', views.home, name='home'),
+
+    # Admin
     path('admin/', admin.site.urls),
+
+    # Auth
+    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    path('accounts/logout/', views.custom_logout, name='logout'),
+    path('accounts/password-change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
+    path('accounts/password-change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
+
+    # Accounts
+    path('accounts/', include('accounts.urls')),
+
+    # Campaigns
     path('campaigns/', include('campaigns.urls')),
+
+    # Subscribers
     path('subscribers/', include('subscribers.urls')),
-    path('', include('campaigns.urls')),  # Default to campaigns app
+
+    # API
+    path('api/', api_home, name='api_home'),
+]
+
+
+# Mount everything under /mail/
+urlpatterns = [
+    path('', lambda request: redirect('/mail/')),  # Redirect root to /mail/
+    path('mail/', include(mail_urlpatterns)),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
--------------------------------------------------------
 
 ---
 
@@ -559,19 +587,14 @@ tail -f /var/log/nginx/access.log
 tail -f /var/log/nginx/error.log
 ```
 
-### **URL Testing**
-- ✅ **Keymasters**: `https://phuma.ddns.net/keymasters/`
-- ✅ **Money App**: `https://phuma.ddns.net/money/`
-- ✅ **Money Admin**: `https://phuma.ddns.net/money/admin/`
-- ✅ **Static Files**: `https://phuma.ddns.net/money/static/`
 
 ---
 
 ## 🛠️ **Step 10: Maintenance Commands**
 
-### **Update Money App**
+### **Update mail App**
 ```bash
-cd /root/web/money
+cd /root/web/mail
 git pull origin main
 source venv/bin/activate
 pip install -r requirements.txt
@@ -583,7 +606,7 @@ systemctl restart gunicorn_money.service
 ### **Restart Services**
 ```bash
 # Restart money app only
-systemctl restart gunicorn_money.service
+systemctl restart gunicorn_mail.service
 
 # Restart both apps
 systemctl restart nginx
@@ -605,7 +628,7 @@ tail -f /var/log/nginx/error.log
 
 ### **Database Management** change to postgresql
 ```bash
-cd /root/web/money
+cd /root/web/mail
 source venv/bin/activate
 
 # Create backup
@@ -620,15 +643,7 @@ python manage.py createsuperuser
 
 ---
 
-## 🔒 **Security Features**
 
-- ✅ **SSL/TLS**: Uses existing Let's Encrypt certificate
-- ✅ **Isolated Services**: Separate systemd services and sockets
-- ✅ **Security Headers**: X-Frame-Options, XSS Protection, etc.
-- ✅ **File Permissions**: Proper ownership and access controls
-- ✅ **Process Isolation**: Different Unix sockets for each app
-
----
 
 ## 🎯 **Final Architecture**
 
