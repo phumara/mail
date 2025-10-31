@@ -753,4 +753,4 @@ sudo systemctl restart gunicorn_money
 7.
 sudo tail -f /var/log/nginx/error.log
 sudo journalctl -u gunicorn_money -f
-tail -f /root/web/money/logs/gunicorn.log
+tail -f /root/web/mail/logs/gunicorn.log
